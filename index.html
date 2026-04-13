@@ -4015,6 +4015,9 @@ document.querySelectorAll('.team-tab').forEach(tab=>{
       e.preventDefault();
       openUnlockModal();
     }
+    if(e.key==='Escape'&&overlay.classList.contains('show')){
+      closeUnlockModal();
+    }
   });
 
   // Editable selectors: all visible text elements
