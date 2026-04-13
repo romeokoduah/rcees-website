@@ -5837,36 +5837,27 @@ self.addEventListener('fetch',e=>{
       });
     });
 
-    // Gallery image file uploads — upload directly to GitHub after crop
+    // Gallery image file uploads — resize silently then upload to GitHub (no cropper)
     panelBody.querySelectorAll('input[type="file"][data-gal-img]').forEach(input=>{
-      input.addEventListener('change',e=>{
+      input.addEventListener('change',async e=>{
         const file=e.target.files[0];
         if(!file) return;
         const i=input.dataset.galImg;
-        const reader=new FileReader();
-        reader.onload=function(ev){
-          const rawUrl=ev.target.result;
-          window.openCropper(rawUrl,async function(croppedUrl){
-            // Immediately upload to GitHub so no base64 ends up in the HTML
-            showToast('Uploading image to GitHub\u2026',30000);
-            const b64=croppedUrl.split(',')[1];
-            const mime=croppedUrl.split(';')[0].replace('data:','');
-            const path=await uploadImageToGitHub(b64,mime);
-            if(path){
-              applyGalleryImage(i,path,true); // silent — we show our own toast
-              const preview=document.getElementById('gal-preview-'+i);
-              if(preview){preview.src=croppedUrl;preview.classList.add('show')}
-              showToast('\u2713 Image uploaded! Click Save HTML to publish.',4000);
-            } else {
-              // Fallback: store as base64 and extract on save
-              applyGalleryImage(i,croppedUrl,true);
-              const preview=document.getElementById('gal-preview-'+i);
-              if(preview){preview.src=croppedUrl;preview.classList.add('show')}
-              showToast('Image ready \u2014 click Save HTML to publish.',4000);
-            }
-          });
-        };
-        reader.readAsDataURL(file);
+        showToast('Uploading\u2026',30000);
+        try{
+          const {b64,mime}=await resizeImage(file);
+          const path=await uploadImageToGitHub(b64,mime);
+          if(path){
+            applyGalleryImage(i,path,true);
+            const preview=document.getElementById('gal-preview-'+i);
+            if(preview){preview.src='data:image/webp;base64,'+b64;preview.classList.add('show');}
+            showToast('\u2713 Uploaded! Click Save HTML to publish.',4000);
+          } else {
+            showToast('\u26a0 Upload failed \u2014 check your GitHub token.',5000);
+          }
+        }catch(err){
+          showToast('\u26a0 Error: '+err.message,5000);
+        }
       });
     });
 
