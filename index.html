@@ -722,6 +722,48 @@ body.edit-mode [contenteditable="true"]:focus{outline:2px solid var(--green);out
 .et-btn.cancel{background:rgba(255,255,255,.15);color:var(--white);border:1px solid rgba(255,255,255,.25)}
 .et-btn.cancel:hover{background:rgba(255,255,255,.25)}
 
+/* Edit unlock modal */
+.edit-unlock-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);
+  z-index:9100;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s}
+.edit-unlock-overlay.show{opacity:1;pointer-events:all}
+.edit-unlock-modal{background:#fff;border-radius:14px;padding:2rem;
+  width:320px;max-width:90vw;box-shadow:0 8px 40px rgba(0,0,0,.2);
+  transform:translateY(8px);transition:transform .2s}
+.edit-unlock-overlay.show .edit-unlock-modal{transform:translateY(0)}
+.edit-unlock-modal h3{font-family:var(--serif);color:var(--blue);
+  margin-bottom:.3rem;font-size:1.1rem}
+.edit-unlock-modal p{font-size:.82rem;color:var(--gray-500);margin-bottom:1rem}
+.edit-unlock-modal input{width:100%;border:1.5px solid var(--gray-200);
+  border-radius:7px;padding:.55rem .75rem;font-size:.9rem;font-family:var(--sans);
+  outline:none;transition:border-color .2s;margin-bottom:.8rem}
+.edit-unlock-modal input:focus{border-color:var(--blue)}
+.edit-unlock-modal input.error{border-color:#e53935}
+.edit-modal-btns{display:flex;gap:.5rem;margin-bottom:1.2rem}
+.edit-modal-btns button{flex:1;padding:.5rem;border-radius:7px;
+  font-family:var(--sans);font-size:.85rem;font-weight:600;cursor:pointer;border:none}
+.edit-modal-cancel{background:var(--gray-50);color:var(--gray-700)}
+.edit-modal-unlock{background:var(--blue);color:#fff}
+.edit-modal-unlock:hover{opacity:.9}
+.token-status{border-top:1px solid var(--gray-100);padding-top:1rem;
+  font-size:.78rem;color:var(--gray-500)}
+.token-status strong{color:var(--green)}
+.token-status .token-saved{color:var(--green)}
+.token-status .token-none{color:var(--gray-400)}
+.token-actions{display:inline-flex;gap:.6rem;margin-top:.3rem}
+.token-actions button{background:none;border:none;cursor:pointer;
+  font-size:.75rem;font-family:var(--sans);font-weight:600;padding:0}
+.token-actions .ta-replace{color:var(--gold)}
+.token-actions .ta-clear{color:#e53935}
+@media(prefers-color-scheme:dark){
+  .edit-unlock-modal{background:#0d2140;color:#e8f0f8}
+  .edit-unlock-modal h3{color:#e8f0f8}
+  .edit-unlock-modal input{background:#071828;border-color:#2a4a6e;color:#e8f0f8}
+  .edit-unlock-modal input:focus{border-color:#5aacee}
+  .edit-modal-cancel{background:#1e3a5a;color:#e8f0f8}
+  .token-status{border-color:#1e3a5a;color:#8aaccc}
+}
+
 .edit-panel{position:fixed;top:0;right:0;bottom:0;width:380px;z-index:9998;background:var(--white);box-shadow:-4px 0 30px rgba(0,0,0,.1);transform:translateX(100%);transition:transform .4s var(--ease-out);overflow-y:auto;font-family:var(--sans)}
 .edit-panel.show{transform:translateX(0)}
 body.edit-active{margin-right:380px;transition:margin-right .4s var(--ease-out)}
@@ -1914,6 +1956,19 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
 </div>
 
 <!-- EDIT MODE UI -->
+<!-- EDIT UNLOCK MODAL -->
+<div class="edit-unlock-overlay" id="editUnlockOverlay" role="dialog" aria-modal="true" aria-labelledby="editUnlockTitle">
+  <div class="edit-unlock-modal">
+    <h3 id="editUnlockTitle">🔑 Site Editor</h3>
+    <p id="editUnlockDesc">Enter your password to unlock editing.</p>
+    <input type="password" id="editUnlockInput" placeholder="Password" autocomplete="current-password">
+    <div class="edit-modal-btns">
+      <button class="edit-modal-cancel" id="editUnlockCancel">Cancel</button>
+      <button class="edit-modal-unlock" id="editUnlockBtn">Unlock</button>
+    </div>
+    <div class="token-status" id="tokenStatus"></div>
+  </div>
+</div>
 <button class="edit-fab" id="editFab" title="Edit this site"><svg width="20" height="20" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
 <div class="edit-toast" id="editToast">Team photo updated!</div>
 
@@ -3874,15 +3929,91 @@ document.querySelectorAll('.team-tab').forEach(tab=>{
   let editActive=false;
   let originalHTML='';
 
-  // Edit mode is hidden by default. Unlock with ?edit=true or Ctrl+Shift+E
+  // ── Password modal unlock ──
+  const overlay=document.getElementById('editUnlockOverlay');
+  const unlockInput=document.getElementById('editUnlockInput');
+  const unlockBtn=document.getElementById('editUnlockBtn');
+  const unlockCancel=document.getElementById('editUnlockCancel');
+  const tokenStatusEl=document.getElementById('tokenStatus');
+  const unlockDesc=document.getElementById('editUnlockDesc');
+
+  async function sha256(str){
+    const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  function renderTokenStatus(){
+    const tok=localStorage.getItem('gh_token');
+    tokenStatusEl.innerHTML=tok
+      ?'<span class="token-saved">✓ GitHub token saved</span><div class="token-actions"><button class="ta-replace" id="taReplace">Replace</button><button class="ta-clear" id="taClear">Clear</button></div>'
+      :'<span class="token-none">No GitHub token saved</span><div class="token-actions"><button class="ta-replace" id="taReplace">Add token</button></div>';
+    document.getElementById('taReplace')?.addEventListener('click',()=>{
+      const t=prompt('Enter new GitHub token:');
+      if(t){localStorage.setItem('gh_token',t.trim());renderTokenStatus();}
+    });
+    document.getElementById('taClear')?.addEventListener('click',()=>{
+      if(confirm('Clear saved GitHub token?')){localStorage.removeItem('gh_token');renderTokenStatus();}
+    });
+  }
+
+  function openUnlockModal(){
+    const hasHash=!!localStorage.getItem('rcees_edit_hash');
+    unlockDesc.textContent=hasHash?'Enter your password to unlock editing.':'Set a password to enable editing on this device.';
+    unlockBtn.textContent=hasHash?'Unlock':'Set Password';
+    unlockInput.value='';
+    unlockInput.classList.remove('error');
+    renderTokenStatus();
+    overlay.classList.add('show');
+    setTimeout(()=>unlockInput.focus(),50);
+  }
+
+  function closeUnlockModal(){
+    overlay.classList.remove('show');
+    unlockInput.value='';
+  }
+
   function unlockEdit(){
     fab.classList.add('unlocked');
   }
-  if(new URLSearchParams(window.location.search).get('edit')==='true') unlockEdit();
+
+  async function tryUnlock(){
+    const pw=unlockInput.value.trim();
+    if(!pw)return;
+    const hash=await sha256(pw);
+    const stored=localStorage.getItem('rcees_edit_hash');
+    if(!stored){
+      // First use — set password
+      localStorage.setItem('rcees_edit_hash',hash);
+      localStorage.setItem('rcees_edit_unlocked',Date.now().toString());
+      closeUnlockModal();
+      unlockEdit();
+    } else if(hash===stored){
+      localStorage.setItem('rcees_edit_unlocked',Date.now().toString());
+      closeUnlockModal();
+      unlockEdit();
+    } else {
+      unlockInput.classList.add('error');
+      unlockInput.value='';
+      unlockInput.placeholder='Incorrect — try again';
+      setTimeout(()=>{unlockInput.classList.remove('error');unlockInput.placeholder='Password';},2000);
+    }
+  }
+
+  // Auto-unlock if session < 30 days old
+  (function checkSession(){
+    const ts=parseInt(localStorage.getItem('rcees_edit_unlocked')||'0');
+    if(ts && Date.now()-ts < 30*24*60*60*1000) unlockEdit();
+  })();
+
+  unlockBtn.addEventListener('click',tryUnlock);
+  unlockInput.addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock();});
+  unlockCancel.addEventListener('click',closeUnlockModal);
+  overlay.addEventListener('click',e=>{if(e.target===overlay)closeUnlockModal();});
+
   document.addEventListener('keydown',function(e){
     if(e.ctrlKey&&e.shiftKey&&e.key==='E'){
       e.preventDefault();
-      unlockEdit();
+      openUnlockModal();
     }
   });
 
