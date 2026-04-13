@@ -5842,7 +5842,7 @@ self.addEventListener('fetch',e=>{
       input.addEventListener('change',async e=>{
         const file=e.target.files[0];
         if(!file) return;
-        const i=input.dataset.galImg;
+        const i=parseInt(input.dataset.galImg,10);
         showToast('Uploading\u2026',30000);
         try{
           const {b64,mime}=await resizeImage(file);
