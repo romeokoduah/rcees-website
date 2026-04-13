@@ -672,29 +672,8 @@ section{padding:5rem 0}
 
 /* ======== RESOURCES ======== */
 #resources{background:linear-gradient(180deg,#f8f9fb 0%,var(--white) 100%);border-top:1px solid var(--gray-100)}
-.res-tabs{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:.5rem}
-.res-tab{font-family:var(--sans);font-size:.82rem;font-weight:600;padding:.45rem 1rem;border:1.5px solid var(--gray-100);border-radius:20px;background:var(--white);color:var(--gray-500);cursor:pointer;transition:all .25s var(--ease)}
-.res-tab:hover{border-color:var(--blue-pale);color:var(--blue)}
-.res-tab.active{background:var(--blue);border-color:var(--blue);color:var(--white)}
-.res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem}
-.res-card{border:1px solid var(--gray-100);border-radius:12px;padding:1.5rem 1.75rem;transition:all .35s var(--ease);display:flex;flex-direction:column}
-.res-card.hidden{display:none}
-.res-card:hover{border-color:var(--blue-pale);transform:translateY(-3px);box-shadow:0 8px 28px rgba(7,46,92,.04)}
-.res-type{display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .55rem;border-radius:4px;margin-bottom:.65rem;width:fit-content}
-.res-type.journal{background:var(--blue-pale);color:var(--blue)}
-.res-type.report{background:#e8f0fe;color:#1a4a8a}
-.res-type.brief{background:var(--green-light);color:var(--green)}
-.res-type.data{background:#fef3e2;color:#9a6b1a}
-.res-card h4{font-family:var(--serif);font-size:1.02rem;font-weight:600;margin-bottom:.35rem;line-height:1.35}
 .res-authors{font-size:.82rem;font-weight:500;color:var(--gray-700);margin-bottom:.15rem!important}
 .res-journal{font-size:.78rem;font-style:italic;color:var(--blue-light);margin-bottom:.5rem!important}
-.res-card p{font-size:.88rem;color:var(--gray-500);line-height:1.55;margin-bottom:.65rem}
-.res-card p:last-of-type{margin-bottom:.75rem}
-.res-link{font-size:.85rem;font-weight:600;color:var(--blue);display:inline-flex;align-items:center;gap:.3rem;transition:gap .2s;margin-top:auto}
-.res-link:hover{gap:.5rem}
-.res-all-link{font-size:.95rem;font-weight:600;color:var(--blue);display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.5rem;border:1.5px solid var(--blue);border-radius:8px;transition:all .25s var(--ease)}
-.res-all-link:hover{background:var(--blue);color:var(--white);gap:.6rem}
-
 /* ======== NEWSLETTER ======== */
 .newsletter{background:linear-gradient(135deg,var(--green-dark) 0%,var(--green) 60%,#2a9a2f 100%);padding:3rem 0;color:var(--white);position:relative;overflow:hidden}
 .newsletter::before{content:'';position:absolute;top:-80px;right:-80px;width:250px;height:250px;background:rgba(255,255,255,.04);border-radius:50%}
@@ -968,7 +947,6 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
   .about-right{position:static}
   .research-grid{grid-template-columns:1fr 1fr}
   .proj-grid{grid-template-columns:repeat(2,1fr)}
-  .res-grid{grid-template-columns:1fr}
   .impact-row{grid-template-columns:repeat(3,1fr)}
   .t-card{width:200px}
   .t-photo{height:170px}
@@ -993,7 +971,7 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
   .slide-text{max-width:100%;padding-right:1rem}
   .stats-row{grid-template-columns:1fr 1fr}
   .stat-num{font-size:1.4rem}
-  .research-grid,.res-grid{grid-template-columns:1fr}
+  .research-grid{grid-template-columns:1fr}
   .proj-grid{grid-template-columns:1fr}
   .r-img{height:140px}
   .impact-row{grid-template-columns:1fr 1fr}
@@ -1001,9 +979,7 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
   .t-photo{height:150px;font-size:1.4rem}
   .team-tabs{gap:.35rem}
   .team-tab{font-size:.75rem;padding:.4rem .7rem}
-  .res-tabs{gap:.35rem}
-  .res-tab{font-size:.75rem;padding:.35rem .75rem}
-  .proj-tabs{overflow-x:auto;flex-wrap:nowrap;gap:.15rem;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+.proj-tabs{overflow-x:auto;flex-wrap:nowrap;gap:.15rem;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
   .proj-tabs::-webkit-scrollbar{display:none}
   .proj-tab{font-size:.78rem;padding:.5rem .7rem}
   .prog-tabs{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;-ms-overflow-style:none}
@@ -1039,7 +1015,7 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
   }
   body{background:#0a1628;color:#e8f0f8}
   /* Cards and sections */
-  .r-card,.pj-card,.t-card,.n-item,.res-card,.prog-tab-content,
+  .r-card,.pj-card,.t-card,.n-item,.prog-tab-content,
   .ci,.ft-col{background:#0d2140;border-color:#1e3a5a}
   .about-highlight{background:#0d3060;border-color:#1e5090}
   /* Nav */
@@ -1087,7 +1063,7 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
   .container{max-width:100%!important;padding:0 1cm!important}
   section{padding:1cm 0!important;page-break-inside:avoid}
   /* Cards */
-  .r-card,.pj-card,.t-card,.n-item,.res-card{
+  .r-card,.pj-card,.t-card,.n-item{
     background:#fff!important;border:1px solid #ccc!important;
     break-inside:avoid;margin-bottom:.5cm;
   }
@@ -1871,35 +1847,6 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
     <div class="gl-caption"><span id="glTitle"></span><small id="glSub"></small></div>
   </div>
 </div>
-
-<!-- RESOURCES -->
-<section id="resources">
-<div class="container">
-  <div class="sec-header" style="text-align:center;max-width:580px;margin:0 auto 1.5rem">
-    <div class="sec-eyebrow rv vis" style="justify-content:center">Resource Library</div>
-    <h2 class="sec-title rv d1 vis">Publications &amp; Research Outputs</h2>
-    <p class="sec-desc rv d2 vis" style="margin:0 auto">Peer-reviewed journal articles, technical reports, policy briefs, and open datasets from RCEES researchers.</p>
-  </div>
-  <div class="res-tabs rv d2 vis">
-    <button class="res-tab active" data-resfilter="all">All</button>
-    <button class="res-tab" data-resfilter="journal">Journal Articles</button>
-    <button class="res-tab" data-resfilter="report">Reports</button>
-    <button class="res-tab" data-resfilter="brief">Policy Briefs</button>
-    <button class="res-tab" data-resfilter="data">Datasets</button>
-  </div>
-  <div class="res-grid" style="margin-top:1.5rem">
-    <div class="res-card rv d2 vis" data-restype="journal"><div class="res-type journal">Journal Article</div><h4 data-edit-id="res-title-0">Life Cycle Assessment of Solar Home Systems in Rural Ghana</h4><p class="res-authors" data-edit-id="res-auth-0">Gyamfi, S., Diawuo, F.A., Batinge, B.</p><p class="res-journal" data-edit-id="res-jour-0">Renewable and Sustainable Energy Reviews, Vol. 178, 2026</p><p data-edit-id="res-desc-0">Comprehensive LCA evaluating environmental impacts of off-grid solar systems deployed across 200 rural households in the Bono East region.</p><a href="#" class="res-link" data-edit-id="res-link-0">View article <svg width="12" height="12" fill="none" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div>
-    <div class="res-card rv d3 vis" data-restype="journal"><div class="res-type journal">Journal Article</div><h4 data-edit-id="res-title-1">Groundwater Quality and Climate Variability in Semi-Arid West Africa</h4><p class="res-authors" data-edit-id="res-auth-1">Antwi-Agyei, P., Mensah, G.S., Okyereh, S.A.</p><p class="res-journal" data-edit-id="res-jour-1">Journal of Hydrology, Vol. 634, 2025</p><p data-edit-id="res-desc-1">Analysis of hydrochemical trends across 45 monitoring stations in the Black Volta basin under changing rainfall regimes.</p><a href="#" class="res-link" data-edit-id="res-link-1">View article <svg width="12" height="12" fill="none" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div>
-    <div class="res-card rv d3 vis" data-restype="journal"><div class="res-type journal">Journal Article</div><h4 data-edit-id="res-title-2">Electric Two-Wheeler Adoption Potential in Sub-Saharan African Cities</h4><p class="res-authors" data-edit-id="res-auth-2">Diawuo, F.A., Gyamfi, S., Yeboah Asuamah, E.</p><p class="res-journal" data-edit-id="res-jour-2">Transportation Research Part D, Vol. 112, 2025</p><p data-edit-id="res-desc-2">Agent-based modelling of e-motorcycle adoption pathways in Accra and Kumasi, incorporating charging infrastructure constraints.</p><a href="#" class="res-link" data-edit-id="res-link-2">View article <svg width="12" height="12" fill="none" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div>
-    <div class="res-card rv d4 vis" data-restype="report"><div class="res-type report">Report</div><h4 data-edit-id="res-title-3">State of Renewable Energy in West Africa 2025</h4><p class="res-authors" data-edit-id="res-auth-3">RCEES &amp; Energy Commission of Ghana</p><p data-edit-id="res-desc-3">Solar, wind, and hydro analysis with investment trends across 15 ECOWAS member states. Includes policy gap analysis and financing roadmap.</p><a href="#" class="res-link" data-edit-id="res-link-3">Download PDF <svg width="12" height="12" fill="none" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div>
-    <div class="res-card rv d4 vis" data-restype="brief"><div class="res-type brief">Policy Brief</div><h4 data-edit-id="res-title-4">Mini-Grid Regulation for Rural Electrification</h4><p class="res-authors" data-edit-id="res-auth-4">Gyamfi, S., Batinge, B.</p><p data-edit-id="res-desc-4">Recommendations for scaling off-grid electricity through community-owned mini-grids in Ghana and the wider ECOWAS region.</p><a href="#" class="res-link" data-edit-id="res-link-4">Download PDF <svg width="12" height="12" fill="none" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div>
-    <div class="res-card rv d5 vis" data-restype="data"><div class="res-type data">Dataset</div><h4 data-edit-id="res-title-5">Sub-Saharan Solar Irradiance 2020 – 2025</h4><p class="res-authors" data-edit-id="res-auth-5">RCEES Open Data Initiative</p><p data-edit-id="res-desc-5">Open-access ground-station and satellite solar irradiance measurements across 12 countries with hourly temporal resolution.</p><a href="#" class="res-link" data-edit-id="res-link-5">Access data <svg width="12" height="12" fill="none" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div>
-  </div>
-  <div class="res-footer rv d5 vis" style="text-align:center;margin-top:2.5rem">
-    <a href="https://scholar.google.com" target="_blank" class="res-all-link">View all publications on Google Scholar <svg width="14" height="14" fill="none" viewBox="0 0 16 16"><path d="M4 12l8-8M6 4h6v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
-  </div>
-</div>
-</section>
 
 <!-- NEWSLETTER -->
 <div class="newsletter">
@@ -3882,21 +3829,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
   });
 })();
 
-// Resource filter tabs
-document.querySelectorAll('.res-tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.res-tab').forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    const filter=tab.dataset.resfilter;
-    document.querySelectorAll('.res-card').forEach(card=>{
-      if(filter==='all'||card.dataset.restype===filter){
-        card.classList.remove('hidden');
-      } else {
-        card.classList.add('hidden');
-      }
-    });
-  });
-});
 
 // Gallery filter tabs + Drive link
 const galDriveLink=document.getElementById('galDriveLink');
@@ -5314,26 +5246,6 @@ self.addEventListener('fetch',e=>{
         html+='</div>';
       });
     }
-    html+='</div></div>';
-
-    // RESOURCES
-    html+='<div class="ep-section" id="eps-resources"><div class="ep-section-title" data-eps="resources">Publications &amp; Resources</div><div class="ep-section-body">';
-    document.querySelectorAll('.res-card').forEach((card,i)=>{
-      const typeBadge=card.querySelector('.res-type');
-      const typeLabel=typeBadge?typeBadge.textContent:'Resource';
-      html+=`<div class="ep-person"><h4>${typeLabel} ${i+1}</h4>`;
-      html+=makeFieldTarget(`res-title-${i}`,'Title',card.querySelector('h4'));
-      const authors=card.querySelector('.res-authors');
-      if(authors) html+=makeFieldTarget(`res-auth-${i}`,'Authors',authors);
-      const journal=card.querySelector('.res-journal');
-      if(journal) html+=makeFieldTarget(`res-jour-${i}`,'Journal / Source',journal);
-      // Find the description paragraph (last p before the link)
-      const paras=card.querySelectorAll('p:not(.res-authors):not(.res-journal)');
-      if(paras.length) html+=makeFieldTarget(`res-desc-${i}`,'Description',paras[0],'textarea');
-      const link=card.querySelector('.res-link');
-      if(link) html+=makeFieldTarget(`res-link-${i}`,'Link text',link);
-      html+='</div>';
-    });
     html+='</div></div>';
 
     // CONTACT
