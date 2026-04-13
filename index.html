@@ -4723,6 +4723,37 @@ self.addEventListener('fetch',e=>{
   }
 
   // Apply image to a gallery item
+  // ── Upload a single image directly to GitHub images/ folder ──
+  async function uploadImageToGitHub(b64,mime){
+    let token=localStorage.getItem('gh_token');
+    if(!token){
+      token=prompt('Enter your GitHub Personal Access Token to upload images:\n(Saved securely in your browser)');
+      if(token) localStorage.setItem('gh_token',token.trim());
+    }
+    if(!token) return null;
+    const owner='Samuelosa',repo='rcees-website';
+    const ext={'image/webp':'webp','image/jpeg':'jpg','image/jpg':'jpg','image/png':'png','image/gif':'gif'}[mime]||'jpg';
+    // Same hash as main save for deduplication
+    function imgHash(s){let h=0;for(let i=0;i<Math.min(s.length,500);i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}return Math.abs(h).toString(36).padStart(8,'0');}
+    const fname='img-'+imgHash(b64)+'.'+ext;
+    const path='images/'+fname;
+    const h={'Authorization':'token '+token,'Content-Type':'application/json'};
+    // Check if file already exists (need SHA to update)
+    let sha;
+    try{
+      const check=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path,{headers:h});
+      if(check.ok) sha=(await check.json()).sha;
+    }catch{}
+    const body={message:'Add gallery image: '+fname,content:b64,branch:'main'};
+    if(sha) body.sha=sha;
+    const res=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path,{
+      method:'PUT',headers:h,body:JSON.stringify(body)
+    });
+    if(res.status===401){localStorage.removeItem('gh_token');return null;}
+    if(!res.ok) return null;
+    return path; // e.g. "images/img-abc12345.jpg"
+  }
+
   function applyGalleryImage(index,url){
     const items=document.querySelectorAll('.gal-item');
     const item=items[index];
@@ -5682,7 +5713,7 @@ self.addEventListener('fetch',e=>{
       });
     });
 
-    // Gallery image file uploads (with cropper)
+    // Gallery image file uploads — upload directly to GitHub after crop
     panelBody.querySelectorAll('input[type="file"][data-gal-img]').forEach(input=>{
       input.addEventListener('change',e=>{
         const file=e.target.files[0];
@@ -5691,10 +5722,24 @@ self.addEventListener('fetch',e=>{
         const reader=new FileReader();
         reader.onload=function(ev){
           const rawUrl=ev.target.result;
-          window.openCropper(rawUrl,function(croppedUrl){
-            applyGalleryImage(i,croppedUrl);
-            const preview=document.getElementById('gal-preview-'+i);
-            if(preview){preview.src=croppedUrl;preview.classList.add('show')}
+          window.openCropper(rawUrl,async function(croppedUrl){
+            // Immediately upload to GitHub so no base64 ends up in the HTML
+            showToast('Uploading image to GitHub\u2026',30000);
+            const b64=croppedUrl.split(',')[1];
+            const mime=croppedUrl.split(';')[0].replace('data:','');
+            const path=await uploadImageToGitHub(b64,mime);
+            if(path){
+              applyGalleryImage(i,path);
+              const preview=document.getElementById('gal-preview-'+i);
+              if(preview){preview.src=croppedUrl;preview.classList.add('show')}
+              showToast('\u2713 Image uploaded! Click Save HTML to publish.',4000);
+            } else {
+              // Fallback: store as base64 and extract on save
+              applyGalleryImage(i,croppedUrl);
+              const preview=document.getElementById('gal-preview-'+i);
+              if(preview){preview.src=croppedUrl;preview.classList.add('show')}
+              showToast('Image saved locally \u2014 will upload when you Save HTML.',4000);
+            }
           });
         };
         reader.readAsDataURL(file);
