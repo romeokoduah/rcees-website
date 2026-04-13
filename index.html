@@ -793,6 +793,52 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
   .btt{bottom:1.25rem;left:1.25rem;width:40px;height:40px}
   section + section::before{width:40px}
 }
+/* ======== DARK MODE (prefers-color-scheme) ======== */
+@media(prefers-color-scheme:dark){
+  :root{
+    --white:#0d2140;
+    --off-white:#0a1e38;
+    --gray-50:#0d2140;
+    --gray-100:#1e3a5a;
+    --gray-200:#2a4a6e;
+    --gray-300:#3a6090;
+    --gray-500:#8aaccc;
+    --gray-700:#b8d0e8;
+    --gray-900:#e8f0f8;
+    --blue-pale:#071828;
+  }
+  body{background:#0a1628;color:#e8f0f8}
+  /* Cards and sections */
+  .r-card,.pj-card,.t-card,.n-item,.res-card,.prog-tab-content,.about-highlight,
+  .nl-box,.ci,.ft-col,.stat-box,.ic-box{background:#0d2140;border-color:#1e3a5a}
+  /* Nav */
+  header{background:#041d3a;border-bottom-color:#1e3a5a}
+  .top-bar{background:#030f1e;border-bottom-color:#1e3a5a}
+  /* Inputs */
+  input,textarea,select{background:#0d2140;color:#e8f0f8;border-color:#2a4a6e}
+  input::placeholder,textarea::placeholder{color:#4a7fa5}
+  /* Links */
+  a:not(.btn-primary):not(.btn-outline):not(.nav-links a){color:#5aacee}
+  /* Research / projects / news backgrounds */
+  #research{background:linear-gradient(180deg,#081c38 0%,#061428 100%)}
+  #projects{background:#0a1628;border-color:#1e3a5a}
+  #programs{background:linear-gradient(180deg,#071828 0%,#061020 100%)}
+  #news{background:linear-gradient(180deg,#081c38 0%,#061428 100%);border-color:#1e3a5a}
+  #resources{background:linear-gradient(180deg,#081c38 0%,#0a1628 100%);border-color:#1e3a5a}
+  #contact{background:linear-gradient(135deg,#071828 0%,#081020 50%,#071828 100%);border-color:#1e3a5a}
+  /* Gallery stays dark — no change needed */
+  /* Impact band */
+  .impact-band{background:linear-gradient(135deg,#030f1e 0%,#041830 100%)}
+  /* Buttons outline */
+  .btn-outline{border-color:#5aacee;color:#5aacee}
+  .btn-outline:hover{background:#5aacee;color:#041d3a}
+  /* Edit panel */
+  .edit-panel,.edit-toolbar{background:#041d3a;border-color:#1e3a5a;color:#e8f0f8}
+  .ep-section{border-color:#1e3a5a}
+  /* Scrollbar */
+  ::-webkit-scrollbar-track{background:#0a1628}
+  ::-webkit-scrollbar-thumb{background:#2a4a6e}
+}
 </style>
 </head>
 <body class="" style="">
