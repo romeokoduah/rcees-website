@@ -3211,11 +3211,26 @@ bttBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
   const FIELDS='title,authors,year,venue,externalIds,citationCount,openAccessPdf';
   const API='https://api.semanticscholar.org/graph/v1/author/';
 
-  Promise.allSettled(AUTHORS.map(author=>
-    fetch(`${API}${author.id}/papers?fields=${FIELDS}&limit=100`)
-      .then(r=>r.ok?r.json():Promise.reject(r.status))
-      .then(d=>({author,papers:d.data||[]}))
-  )).then(results=>{
+  // Fetch sequentially with 400ms gap to stay within Semantic Scholar rate limit (1 req/s)
+  async function fetchAll(){
+    const results=[];
+    for(let i=0;i<AUTHORS.length;i++){
+      if(i>0)await new Promise(r=>setTimeout(r,400));
+      const author=AUTHORS[i];
+      try{
+        let res=await fetch(`${API}${author.id}/papers?fields=${FIELDS}&limit=100`);
+        if(res.status===429){
+          await new Promise(r=>setTimeout(r,2000)); // back off and retry once
+          res=await fetch(`${API}${author.id}/papers?fields=${FIELDS}&limit=100`);
+        }
+        const d=res.ok?await res.json():{data:[]};
+        results.push({status:'fulfilled',value:{author,papers:d.data||[]}});
+      }catch(e){results.push({status:'rejected'});}
+    }
+    return results;
+  }
+
+  fetchAll().then(results=>{
 
     // Merge & deduplicate by paperId
     const map=new Map();
