@@ -3648,6 +3648,10 @@ document.querySelectorAll('.team-tab').forEach(tab=>{
     publishToGitHub(html,token).then((result)=>{
       const imgNote=result.imagesExtracted?(' \u2014 '+result.imagesExtracted+' image'+(result.imagesExtracted>1?'s':'')+' extracted'):'';
       showToast('\u2713 Published'+imgNote+'! Live at samuelosa.github.io/rcees-website in ~30s',5000);
+      // Clear draft so the restore banner doesn't appear after publish
+      try{localStorage.removeItem('rcees_draft');}catch(e){}
+      const draftBar=document.getElementById('draft-bar');
+      if(draftBar)draftBar.remove();
     }).catch(err=>{
       if(err.message==='INVALID_TOKEN'){
         localStorage.removeItem('gh_token');
