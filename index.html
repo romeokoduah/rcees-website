@@ -841,6 +841,20 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
 .reorder-fixed .reorder-name{color:var(--gray-300)}
 .reorder-fixed .reorder-grip{opacity:.3}
 
+/* Undo/redo bar */
+.ep-undo-bar{display:flex;align-items:center;justify-content:space-between;
+  padding:.5rem .8rem;background:var(--gray-50);border-radius:7px;
+  font-size:.78rem;color:var(--gray-500);margin-bottom:.8rem}
+.ep-undo-bar button{background:none;border:1px solid var(--gray-200);
+  border-radius:5px;padding:.2rem .55rem;font-size:.75rem;cursor:pointer;
+  font-family:var(--sans);color:var(--gray-700);transition:all .15s}
+.ep-undo-bar button:disabled{opacity:.35;cursor:not-allowed}
+.ep-undo-bar button:not(:disabled):hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+@media(prefers-color-scheme:dark){
+  .ep-undo-bar{background:#1e3a5a;color:#8aaccc}
+  .ep-undo-bar button{border-color:#2a4a6e;color:#b8d0e8}
+}
+
 /* ======== IMAGE CROPPER ======== */
 .crop-overlay{position:fixed;inset:0;z-index:20000;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;flex-direction:column;padding:1.5rem}
 .crop-overlay.show{display:flex}
@@ -1997,7 +2011,13 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
     </div>
   </div>
   <div class="ep-tab-content active" id="epTabContent">
-    <div class="ep-body" id="epBody"><div class="ep-nav"><button class="ep-nav-btn" data-epnav="hero">Hero Slides</button><button class="ep-nav-btn" data-epnav="about">About</button><button class="ep-nav-btn" data-epnav="milestones">Milestones</button><button class="ep-nav-btn" data-epnav="research">Research Themes</button><button class="ep-nav-btn" data-epnav="projects">Projects</button><button class="ep-nav-btn" data-epnav="impact">Impact</button><button class="ep-nav-btn" data-epnav="programmes">Programmes</button><button class="ep-nav-btn active" data-epnav="people">People</button><button class="ep-nav-btn" data-epnav="news">News</button><button class="ep-nav-btn" data-epnav="resources">Resources</button><button class="ep-nav-btn" data-epnav="contact">Contact</button></div><div class="ep-section collapsed" id="eps-hero"><div class="ep-section-title" data-eps="hero">Hero Slides</div><div class="ep-section-body"><div class="ep-person"><h4>Slide 1: Welcome / Overview</h4><div class="ep-img-upload">
+    <div class="ep-body" id="epBody"><div class="ep-undo-bar" id="epUndoBar">
+  <span id="epUndoLabel">No history yet</span>
+  <div style="display:flex;gap:.3rem">
+    <button id="epUndo" title="Undo (Ctrl+Z)" disabled>↩ Undo</button>
+    <button id="epRedo" title="Redo (Ctrl+Y)" disabled>↪ Redo</button>
+  </div>
+</div><div class="ep-nav"><button class="ep-nav-btn" data-epnav="hero">Hero Slides</button><button class="ep-nav-btn" data-epnav="about">About</button><button class="ep-nav-btn" data-epnav="milestones">Milestones</button><button class="ep-nav-btn" data-epnav="research">Research Themes</button><button class="ep-nav-btn" data-epnav="projects">Projects</button><button class="ep-nav-btn" data-epnav="impact">Impact</button><button class="ep-nav-btn" data-epnav="programmes">Programmes</button><button class="ep-nav-btn active" data-epnav="people">People</button><button class="ep-nav-btn" data-epnav="news">News</button><button class="ep-nav-btn" data-epnav="resources">Resources</button><button class="ep-nav-btn" data-epnav="contact">Contact</button></div><div class="ep-section collapsed" id="eps-hero"><div class="ep-section-title" data-eps="hero">Hero Slides</div><div class="ep-section-body"><div class="ep-person"><h4>Slide 1: Welcome / Overview</h4><div class="ep-img-upload">
         <label class="ep-upload-label has-img" for="slide-img-0">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
           <span>Picture2.jpg</span>
@@ -3929,6 +3949,46 @@ document.querySelectorAll('.team-tab').forEach(tab=>{
   let editActive=false;
   let originalHTML='';
 
+  // ── Undo / Redo ──
+  const historyStack=[];
+  let historyIdx=-1;
+  const MAX_HISTORY=50;
+  const epUndo=document.getElementById('epUndo');
+  const epRedo=document.getElementById('epRedo');
+  const epUndoLabel=document.getElementById('epUndoLabel');
+
+  function pushHistory(){
+    // Drop any redo future
+    historyStack.splice(historyIdx+1);
+    historyStack.push(document.documentElement.outerHTML);
+    if(historyStack.length>MAX_HISTORY) historyStack.shift();
+    historyIdx=historyStack.length-1;
+    updateUndoUI();
+  }
+
+  function updateUndoUI(){
+    epUndo.disabled=historyIdx<=0;
+    epRedo.disabled=historyIdx>=historyStack.length-1;
+    epUndoLabel.textContent=historyStack.length>1?'Step '+(historyIdx+1)+' / '+historyStack.length:'No history yet';
+  }
+
+  function restoreFromHistory(html){
+    document.open();document.write(html);document.close();
+  }
+
+  epUndo.addEventListener('click',()=>{
+    if(historyIdx>0){historyIdx--;restoreFromHistory(historyStack[historyIdx]);}
+  });
+  epRedo.addEventListener('click',()=>{
+    if(historyIdx<historyStack.length-1){historyIdx++;restoreFromHistory(historyStack[historyIdx]);}
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(!editActive) return;
+    if(e.ctrlKey&&!e.shiftKey&&e.key==='z'){e.preventDefault();epUndo.click();}
+    if(e.ctrlKey&&(e.key==='y'||(e.shiftKey&&e.key==='Z'))){e.preventDefault();epRedo.click();}
+  });
+
   // ── Password modal unlock ──
   const overlay=document.getElementById('editUnlockOverlay');
   const unlockInput=document.getElementById('editUnlockInput');
@@ -4057,6 +4117,17 @@ document.querySelectorAll('.team-tab').forEach(tab=>{
       }
     });
 
+    // Push history on edits (debounced 800ms)
+    if(!document.body.getAttribute('data-history-listener')){
+      document.body.setAttribute('data-history-listener','1');
+      let historyTimer=null;
+      document.addEventListener('input',function onInput(e){
+        if(!editActive) return;
+        clearTimeout(historyTimer);
+        historyTimer=setTimeout(pushHistory,800);
+      });
+    }
+
     // Also make footer text editable
     document.querySelectorAll('footer h4, footer p, footer a, .ft-tag').forEach(el=>{
       addEditPersist(el);
@@ -4069,6 +4140,7 @@ document.querySelectorAll('.team-tab').forEach(tab=>{
     document.querySelector('.ep-tab[data-panel-tab="content"]').classList.add('active');
     document.getElementById('epTabContent').classList.add('active');
     showToast('Edit mode on. Click any text to edit.');
+    pushHistory(); // capture initial state
   }
 
   function exitEditMode(){
