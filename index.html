@@ -4493,6 +4493,7 @@ ${sections.map(s=>`  <url><loc>${base}/${s}</loc></url>`).join('\n')}
       pidx++;
       return placeholder;
     });
+    console.log('[save] found',imageQueue.length,'embedded image(s) to extract');
     // Convert to WebP in parallel
     const converted=await Promise.all(imageQueue.map(async item=>{
       const result=await toWebP(item.b64,item.mime);
@@ -4522,14 +4523,30 @@ ${sections.map(s=>`  <url><loc>${base}/${s}</loc></url>`).join('\n')}
       imageBlobs.push({path:img.path,sha:(await r.json()).sha});
     }
 
-    // ── STEP 3: Upload HTML blob (base64 — more reliable for large payloads) ──
+    // ── STEP 3: Upload HTML blob (TextEncoder → base64, handles all Unicode) ──
     showToast('Publishing\u2026 uploading page\u2026',60000);
-    const htmlB64=btoa(unescape(encodeURIComponent(cleanHtml)));
+    let htmlB64;
+    try{
+      // Modern reliable UTF-8 → base64 (no deprecated unescape)
+      const bytes=new TextEncoder().encode(cleanHtml);
+      let bin='';
+      const chunk=8192;
+      for(let i=0;i<bytes.length;i+=chunk){
+        bin+=String.fromCharCode(...bytes.subarray(i,i+chunk));
+      }
+      htmlB64=btoa(bin);
+    }catch(encErr){
+      throw new Error('HTML encoding failed: '+encErr.message);
+    }
     const htmlBlobRes=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/git/blobs',{
       method:'POST',headers:h,body:JSON.stringify({content:htmlB64,encoding:'base64'})
     });
     if(htmlBlobRes.status===401)throw new Error('INVALID_TOKEN');
-    if(!htmlBlobRes.ok)throw new Error('HTML upload failed ('+htmlBlobRes.status+' '+htmlBlobRes.statusText+')');
+    if(!htmlBlobRes.ok){
+      let detail='';
+      try{detail=(await htmlBlobRes.json()).message||'';}catch{}
+      throw new Error('HTML upload failed ('+htmlBlobRes.status+'): '+detail);
+    }
     const htmlBlob=await htmlBlobRes.json();
 
     // ── Generate sw.js (after imageBlobs so all image paths are available) ──
@@ -4585,12 +4602,17 @@ self.addEventListener('fetch',e=>{
     const robotsBlob=await robotsBlobRes.json();
 
     // ── STEP 4: Get HEAD commit + tree ──
+    showToast('Publishing\u2026 reading branch\u2026',60000);
     const refRes=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/git/ref/heads/main',{headers:h});
-    if(!refRes.ok)throw new Error('Could not read branch');
+    if(refRes.status===401)throw new Error('INVALID_TOKEN');
+    if(!refRes.ok)throw new Error('Could not read branch ('+refRes.status+')');
     const headSha=(await refRes.json()).object.sha;
-    const commitData=await(await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/git/commits/'+headSha,{headers:h})).json();
+    const commitRes=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/git/commits/'+headSha,{headers:h});
+    if(!commitRes.ok)throw new Error('Could not read commit ('+commitRes.status+')');
+    const commitData=await commitRes.json();
 
     // ── STEP 5: Create tree with HTML + any new images ──
+    showToast('Publishing\u2026 building tree\u2026',60000);
     const treeItems=[
       {path:'index.html',mode:'100644',type:'blob',sha:htmlBlob.sha},
       {path:'sw.js',mode:'100644',type:'blob',sha:swBlob.sha},
@@ -4598,23 +4620,38 @@ self.addEventListener('fetch',e=>{
       {path:'robots.txt',mode:'100644',type:'blob',sha:robotsBlob.sha},
       ...imageBlobs.map(img=>({path:img.path,mode:'100644',type:'blob',sha:img.sha}))
     ];
-    const treeData=await(await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/git/trees',{
+    const treeRes=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/git/trees',{
       method:'POST',headers:h,
       body:JSON.stringify({base_tree:commitData.tree.sha,tree:treeItems})
-    })).json();
+    });
+    if(!treeRes.ok){
+      let detail='';try{detail=(await treeRes.json()).message||'';}catch{}
+      throw new Error('Tree creation failed ('+treeRes.status+'): '+detail);
+    }
+    const treeData=await treeRes.json();
 
     // ── STEP 6: Commit ──
+    showToast('Publishing\u2026 committing\u2026',60000);
     const msg='Update website \u2014 '+new Date().toLocaleString()+(newImages.length?' ('+newImages.length+' new image'+(newImages.length>1?'s':'')+')':'');
-    const newCommit=await(await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/git/commits',{
+    const commitCreateRes=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/git/commits',{
       method:'POST',headers:h,
       body:JSON.stringify({message:msg,tree:treeData.sha,parents:[headSha]})
-    })).json();
+    });
+    if(!commitCreateRes.ok){
+      let detail='';try{detail=(await commitCreateRes.json()).message||'';}catch{}
+      throw new Error('Commit failed ('+commitCreateRes.status+'): '+detail);
+    }
+    const newCommit=await commitCreateRes.json();
 
     // ── STEP 7: Advance branch ──
     const updateRes=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/git/refs/heads/main',{
       method:'PATCH',headers:h,body:JSON.stringify({sha:newCommit.sha})
     });
-    if(!updateRes.ok)throw new Error('Failed to update branch ('+updateRes.status+')');
+    if(!updateRes.ok){
+      let detail='';try{detail=(await updateRes.json()).message||'';}catch{}
+      throw new Error('Branch update failed ('+updateRes.status+'): '+detail);
+    }
+    console.log('[save] \u2713 committed',newCommit.sha.slice(0,7),'with',newImages.length,'new image(s)');
     return{imagesExtracted:newImages.length};
   }
 
