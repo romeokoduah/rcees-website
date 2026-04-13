@@ -659,6 +659,26 @@ section{padding:5rem 0}
 .btn-submit{width:100%;padding:.8rem;background:var(--blue);color:var(--white);border:none;border-radius:8px;font-family:var(--sans);font-size:.9rem;font-weight:600;cursor:pointer;transition:background .25s}
 .btn-submit:hover{background:var(--green)}
 
+/* ======== LOCATION CARD ======== */
+.location-card{background:var(--white);border-radius:12px;padding:1.5rem;
+  border:1px solid var(--gray-100);box-shadow:0 2px 12px rgba(7,46,92,.06)}
+.location-card h4{font-family:var(--serif);color:var(--blue);margin-bottom:.8rem;font-size:1.1rem}
+.location-addr{font-size:.9rem;color:var(--gray-700);line-height:1.7;margin-bottom:1rem}
+.location-maps-link{display:inline-flex;align-items:center;gap:.4rem;
+  font-size:.85rem;font-weight:600;color:var(--green);text-decoration:none;margin-bottom:1.2rem}
+.location-maps-link:hover{text-decoration:underline}
+.location-getting-here{border-top:1px solid var(--gray-100);padding-top:1rem}
+.location-getting-here h5{font-size:.78rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--gray-500);margin-bottom:.5rem}
+.location-getting-here p{font-size:.83rem;color:var(--gray-500);line-height:1.8}
+@media(prefers-color-scheme:dark){
+  .location-card{background:#0d2140;border-color:#1e3a5a}
+  .location-card h4{color:#e8f0f8}
+  .location-addr{color:#b8d0e8}
+  .location-getting-here{border-color:#1e3a5a}
+  .location-getting-here p{color:#8aaccc}
+}
+
 /* ======== FOOTER ======== */
 footer{background:var(--gray-900);color:rgba(255,255,255,.4);padding:3.5rem 0 1.5rem}
 .ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:3rem}
@@ -1755,6 +1775,31 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
       <div id="cf-error" role="alert" aria-live="assertive" style="color:#c00;font-size:.85rem;margin-bottom:.5rem;display:none"></div>
       <button type="submit" class="btn-submit">Send Message</button>
     </form>
+  </div>
+</div>
+<div class="location-card">
+  <h4>📍 Find Us</h4>
+  <p class="location-addr">
+    Regional Centre for Energy and Environmental Sustainability<br>
+    University of Energy and Natural Resources<br>
+    Sunyani Campus, Bono Region<br>
+    Ghana
+  </p>
+  <a class="location-maps-link"
+     href="https://www.google.com/maps/search/University+of+Energy+and+Natural+Resources+Sunyani+Ghana"
+     target="_blank" rel="noopener">
+    <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"
+            fill="currentColor"/>
+    </svg>
+    Open in Google Maps
+  </a>
+  <div class="location-getting-here">
+    <h5>Getting Here</h5>
+    <p>
+      ✈ Nearest airport: Kumasi (KMS) — approx. 120 km<br>
+      🚌 Bus from Accra: ~5 hrs via Techiman Road
+    </p>
   </div>
 </div>
 </div>
