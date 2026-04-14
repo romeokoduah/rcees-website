@@ -649,10 +649,11 @@ section{padding:5rem 0}
 .gal-item:hover .gal-caption{transform:translateY(0);opacity:1}
 .gal-caption span{font-size:.78rem;font-weight:600;color:var(--white)}
 .gal-caption small{display:block;font-size:.68rem;color:rgba(255,255,255,.75);margin-top:.15rem}
-.gal-more-btn{display:block;margin:1.5rem auto 0;font-family:var(--sans);font-size:.82rem;font-weight:600;padding:.5rem 1.5rem;border:1.5px solid var(--blue);border-radius:8px;background:var(--white);color:var(--blue);cursor:pointer;transition:all .25s}
-.gal-more-btn:hover{background:var(--blue);color:var(--white)}
-.gal-item.gal-extra{display:none}
-#gallery.show-all-gal .gal-item.gal-extra{display:block}
+#gallery .pub-pagination{margin-top:1.5rem}
+#gallery .pub-pg-btn{border-color:rgba(255,255,255,.25);background:transparent;color:var(--white)}
+#gallery .pub-pg-btn:hover:not(:disabled){background:var(--white);color:var(--blue-dark)}
+#gallery .pub-pg-btn:disabled{opacity:.35;cursor:default}
+#gallery .pub-pg-info{color:rgba(255,255,255,.7)}
 
 /* Gallery lightbox */
 .gl-overlay{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s ease;display:flex;align-items:center;justify-content:center;padding:2rem}
@@ -1732,7 +1733,7 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
 </section>
 
 <!-- MEDIA GALLERY -->
-<section id="gallery" class="show-all-gal">
+<section id="gallery">
 <div class="container">
   <div class="sec-header" style="text-align:center;max-width:580px;margin:0 auto 1.5rem">
     <div class="sec-eyebrow rv vis" style="justify-content:center">Media</div>
@@ -1757,12 +1758,12 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
     <div class="gal-item rv d5 vis" data-gal-cat="research" style=""><img src="images/img-u3aag3la.webp" alt="Bui Solar Farm" loading="lazy"><div class="gal-caption"><span>Bui Solar Farm</span><small>Field visit</small></div></div>
     <div class="gal-item rv d6 vis" data-gal-cat="research" style=""><img src="images/img-h7uhuy0z.webp" alt="Solar panel installation" loading="lazy"><div class="gal-caption"><span>Solar Panel Installation</span><small>Research activity</small></div></div>
     <div class="gal-item rv d7 vis" data-gal-cat="events" style=""><img src="images/img-l6274rni.webp" alt="Panel discussion" loading="lazy"><div class="gal-caption"><span>Panel Discussion</span><small>RCEES SEC 2024</small></div></div>
-    <div class="gal-item gal-extra" data-gal-cat="students" style=""><img src="images/img-37r16wly.jpg" alt="Graduation ceremony" loading="lazy"><div class="gal-caption"><span>Graduation Ceremony</span><small>PhD graduates</small></div></div>
-    <div class="gal-item gal-extra" data-gal-cat="campus" style=""><img src="images/img-srx01y5r.jpg" alt="RCEES training workshop" loading="lazy"><div class="gal-caption"><span>Training Workshop</span><small>RCEES capacity building</small></div></div>
-    <div class="gal-item gal-extra" data-gal-cat="events" style=""><img src="images/img-4jri9vje.jpg" alt="Workshop group photo" loading="lazy"><div class="gal-caption"><span>Workshop Group Photo</span><small>RCEES event</small></div></div>
-    <div class="gal-item gal-extra" data-gal-cat="campus" style=""><img src="images/img-wogqs0gt.jpg" alt="RCEES building" loading="lazy"><div class="gal-caption"><span>RCEES Building</span><small>UENR campus</small></div></div>
+    <div class="gal-item" data-gal-cat="students" style=""><img src="images/img-37r16wly.jpg" alt="Graduation ceremony" loading="lazy"><div class="gal-caption"><span>Graduation Ceremony</span><small>PhD graduates</small></div></div>
+    <div class="gal-item" data-gal-cat="campus" style=""><img src="images/img-srx01y5r.jpg" alt="RCEES training workshop" loading="lazy"><div class="gal-caption"><span>Training Workshop</span><small>RCEES capacity building</small></div></div>
+    <div class="gal-item" data-gal-cat="events" style=""><img src="images/img-4jri9vje.jpg" alt="Workshop group photo" loading="lazy"><div class="gal-caption"><span>Workshop Group Photo</span><small>RCEES event</small></div></div>
+    <div class="gal-item" data-gal-cat="campus" style=""><img src="images/img-wogqs0gt.jpg" alt="RCEES building" loading="lazy"><div class="gal-caption"><span>RCEES Building</span><small>UENR campus</small></div></div>
   </div>
-  <button class="gal-more-btn" id="galMoreBtn" style="display: block;">Show fewer photos</button>
+  <div id="galPager" class="pub-pagination" style="display:none"></div>
 </div>
 </section>
 
@@ -3826,50 +3827,43 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
 })();
 
 
-// Gallery filter tabs
-document.querySelectorAll('.gal-filter').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.gal-filter').forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    const filter=tab.dataset.gal;
-    document.querySelectorAll('.gal-item').forEach(item=>{
-      if(filter==='all'||item.dataset.galCat===filter){
-        item.style.display='';
-      } else {
-        item.style.display='none';
-      }
-    });
-    updateGalleryMoreBtn();
-  });
-});
-
-// Gallery show more functionality
-const galMoreBtn=document.getElementById('galMoreBtn');
-const gallerySection=document.getElementById('gallery');
-if(galMoreBtn&&gallerySection){
-  galMoreBtn.addEventListener('click',()=>{
-    gallerySection.classList.toggle('show-all-gal');
-    galMoreBtn.textContent=gallerySection.classList.contains('show-all-gal')?'Show fewer photos':'Show more photos';
-  });
-}
-
-function updateGalleryMoreBtn(){
-  if(!galMoreBtn||!gallerySection) return;
-  const activeFilter=document.querySelector('.gal-filter.active')?.dataset.gal||'all';
-  let visibleCount=0;
-  document.querySelectorAll('.gal-item').forEach(item=>{
-    const isVisible=item.style.display!=='none';
-    if(isVisible&&!item.classList.contains('gal-extra')) visibleCount++;
-  });
-  const hasExtra=activeFilter==='all'
-    ?document.querySelectorAll('.gal-item.gal-extra').some(i=>i.style.display!=='none')
-    :document.querySelectorAll(`.gal-item.gal-extra[data-gal-cat="${activeFilter}"]`).length>0;
-  if(hasExtra){
-    galMoreBtn.style.display='block';
-  } else {
-    galMoreBtn.style.display='none';
+// Gallery pagination
+(function(){
+  const PAGE_SIZE=4;
+  let currentPage=1;
+  let currentFilter='all';
+  const pager=document.getElementById('galPager');
+  const allItems=Array.from(document.querySelectorAll('.gal-item'));
+  function getFiltered(){
+    return allItems.filter(item=>currentFilter==='all'||item.dataset.galCat===currentFilter);
   }
-}
+  function renderGalleryPage(page){
+    const filtered=getFiltered();
+    const totalPages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
+    currentPage=Math.min(Math.max(1,page),totalPages);
+    const start=(currentPage-1)*PAGE_SIZE;
+    allItems.forEach(item=>{item.style.display='none';});
+    filtered.slice(start,start+PAGE_SIZE).forEach(item=>{item.style.display='';});
+    if(pager){
+      pager.innerHTML=
+        '<button class="pub-pg-btn" id="galPrev"'+(currentPage<=1?' disabled':'')+'>&#8592; Prev</button>'+
+        '<span class="pub-pg-info">Page '+currentPage+' of '+totalPages+'</span>'+
+        '<button class="pub-pg-btn" id="galNext"'+(currentPage>=totalPages?' disabled':'')+'>Next &#8594;</button>';
+      pager.style.display=totalPages<=1?'none':'';
+      pager.querySelector('#galPrev').addEventListener('click',()=>renderGalleryPage(currentPage-1));
+      pager.querySelector('#galNext').addEventListener('click',()=>renderGalleryPage(currentPage+1));
+    }
+  }
+  document.querySelectorAll('.gal-filter').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      document.querySelectorAll('.gal-filter').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      currentFilter=tab.dataset.gal;
+      renderGalleryPage(1);
+    });
+  });
+  renderGalleryPage(1);
+})();
 
 // Gallery lightbox
 const glOverlay=document.getElementById('glOverlay');
