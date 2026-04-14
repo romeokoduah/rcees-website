@@ -25,7 +25,7 @@ const tiers: Tier[] = [
     href: "/academics/phd",
     blurb:
       "Four doctoral routes combining one year of coursework with two years of original research — rigorous, funded, and built for impact.",
-    image: images.heroLab,
+    image: images.phdCard,
     duration: "3 years",
     routes: "4 routes",
     tags: ["Funded", "Research", "Publishing required"],
@@ -37,7 +37,7 @@ const tiers: Tier[] = [
     href: "/academics/msc",
     blurb:
       "Two-year master's degrees across engineering, economics, policy and environmental management — taught by faculty who publish in the journals they teach from.",
-    image: images.heroGraduation,
+    image: images.mscCard,
     duration: "2 years",
     routes: "4 routes",
     tags: ["Industry-ready", "Coursework + research"],
@@ -49,7 +49,7 @@ const tiers: Tier[] = [
     href: "/academics/short-courses",
     blurb:
       "Certified, industry-aligned short courses for working engineers and policymakers — classroom instruction plus field delivery and project work.",
-    image: images.heroSolar,
+    image: images.shortCoursesCard,
     duration: "Flexible",
     routes: "7 courses",
     tags: ["Certified", "Field delivery"],
