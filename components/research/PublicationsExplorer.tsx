@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-type Author = { name: string; orcid: string | null; isRcees: boolean };
+type Author = { name: string; isRcees: boolean; isUenr: boolean };
 type Publication = {
   id: string;
   doi: string | null;
@@ -12,12 +12,16 @@ type Publication = {
   type: string | null;
   citations: number;
   authors: Author[];
+  authorCount: number;
   venue: string | null;
   venueType: string | null;
   isOpenAccess: boolean;
+  isRcees: boolean;
+  isUenr: boolean;
   url: string;
   topics: string[];
 };
+type Scope = "rcees" | "uenr" | "all";
 type Payload = {
   source: string;
   fetchedAt: string;
@@ -36,6 +40,7 @@ export function PublicationsExplorer() {
   const [sort, setSort] = useState<SortKey>("year-desc");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [yearFilter, setYearFilter] = useState<string>("all");
+  const [scope, setScope] = useState<Scope>("uenr");
   const [oaOnly, setOaOnly] = useState(false);
   const [visible, setVisible] = useState(25);
 
@@ -57,7 +62,12 @@ export function PublicationsExplorer() {
     };
   }, []);
 
-  const pubs = data?.publications || [];
+  const allPubs = data?.publications || [];
+  const pubs = useMemo(() => {
+    if (scope === "rcees") return allPubs.filter((p) => p.isRcees);
+    if (scope === "uenr") return allPubs.filter((p) => p.isUenr || p.isRcees);
+    return allPubs;
+  }, [allPubs, scope]);
 
   const types = useMemo(() => {
     const set = new Set<string>();
@@ -141,13 +151,38 @@ export function PublicationsExplorer() {
   return (
     <div className="mt-10">
       <div className="grid gap-px border border-rule bg-rule md:grid-cols-4">
-        <Stat label="Publications" value={data.count.toLocaleString()} />
+        <Stat label="Publications (in view)" value={pubs.length.toLocaleString()} />
         <Stat label="Citations" value={totalCitations.toLocaleString()} />
         <Stat label="RCEES authors" value={rceesAuthors.toLocaleString()} />
         <Stat label="Last updated" value={fetchedOn} small />
       </div>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-[1fr_auto_auto_auto_auto]">
+      <div className="mt-6 inline-flex border border-rule bg-paper">
+        {(
+          [
+            { v: "rcees", label: `RCEES only (${allPubs.filter((p) => p.isRcees).length})` },
+            { v: "uenr", label: `UENR + RCEES (${allPubs.filter((p) => p.isUenr || p.isRcees).length})` },
+            { v: "all", label: `All sources (${allPubs.length})` },
+          ] as { v: Scope; label: string }[]
+        ).map((opt, i) => (
+          <button
+            key={opt.v}
+            onClick={() => {
+              setScope(opt.v);
+              setVisible(25);
+            }}
+            className={`px-4 py-2 text-xs uppercase tracking-wider ${
+              scope === opt.v
+                ? "bg-ink text-paper"
+                : "text-ink/70 hover:text-ink"
+            } ${i > 0 ? "border-l border-rule" : ""}`}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-4 grid gap-4 md:grid-cols-[1fr_auto_auto_auto_auto]">
         <input
           type="search"
           placeholder="Search title, author, venue, topic…"
@@ -227,13 +262,21 @@ export function PublicationsExplorer() {
               <p className="mt-2 text-sm text-ink/75">
                 {p.authors.slice(0, 6).map((a, i) => (
                   <span key={i}>
-                    <span className={a.isRcees ? "font-medium text-ink" : ""}>
+                    <span
+                      className={
+                        a.isRcees
+                          ? "font-semibold text-ink"
+                          : a.isUenr
+                            ? "font-medium text-ink"
+                            : ""
+                      }
+                    >
                       {a.name}
                     </span>
                     {i < Math.min(p.authors.length, 6) - 1 ? ", " : ""}
                   </span>
                 ))}
-                {p.authors.length > 6 && ` …+${p.authors.length - 6} more`}
+                {p.authorCount > 6 && ` …+${p.authorCount - 6} more`}
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
                 {p.venue && <span className="italic">{p.venue}</span>}

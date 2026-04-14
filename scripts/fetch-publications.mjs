@@ -1,19 +1,22 @@
 #!/usr/bin/env node
 /**
- * Fetches RCEES publications from OpenAlex and writes public/data/publications.json.
- * Runs at build time (GitHub Actions cron + on push) so the static site always ships
- * with the latest corpus.
+ * Fetches RCEES / UENR publications from OpenAlex and writes
+ * public/data/publications.json. Runs on every deploy (push + daily cron).
  *
- * Sources:
- *   - OpenAlex works filtered by UENR institution lineage + "RCEES" in raw affiliation
- *   - OpenAlex works where raw affiliation mentions the full centre name
- * Deduped by OpenAlex work ID.
+ * Strategy (union + dedupe by work ID):
+ *   1. All works where any author is affiliated with UENR
+ *      (institution lineage I291863076).
+ *   2. Works where raw affiliation string mentions "RCEES" or the full
+ *      centre name — catches entries with RCEES tagged but not UENR.
+ *   3. For each named RCEES faculty member, resolve all OpenAlex author
+ *      IDs that have UENR in their institution history, then pull every
+ *      work by those author IDs. Catches publications listed under a
+ *      visiting or prior affiliation.
  */
 
 import { writeFile, mkdir } from "node:fs/promises";
-import { dirname } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dirname, "..", "public", "data", "publications.json");
@@ -21,6 +24,33 @@ const OUT_PATH = join(__dirname, "..", "public", "data", "publications.json");
 const UENR_INSTITUTION = "I291863076";
 const MAILTO = "rcees@uenr.edu.gh";
 const PER_PAGE = 200;
+const PAGE_CEILING = 60; // safety: up to 12,000 works per filter
+
+const FACULTY_NAMES = [
+  "Eric Antwi Ofosu",
+  "Samuel Gyamfi",
+  "Amos Kabo-Bah",
+  "Francis Attiogbe",
+  "Nana Sarfo Derkyi",
+  "Daniel Adu",
+  "Samuel Fosu Gyasi",
+  "Ebenezer Kumi",
+  "Ismaila Emahi",
+  "Emmanuel Amankwah",
+  "Martin Domfeh",
+  "Mary Antwi",
+  "Mark Amo-Boateng",
+  "Eric Donyina",
+  "Kamila Kabo-Bah",
+  "Felix Amankwah Diawuo",
+  "Prince Antwi-Agyei",
+  "David Anaafo",
+  "Francis Kuranchie",
+  "E. Kwesi Nyantakyi",
+  "Edward Awafo",
+  "Kenneth Bentum",
+  "Benjamin Batinge",
+];
 
 const SELECT = [
   "id",
@@ -35,48 +65,83 @@ const SELECT = [
   "primary_location",
   "open_access",
   "language",
-  "referenced_works_count",
   "concepts",
 ].join(",");
 
-const FILTERS = [
-  `authorships.institutions.lineage:${UENR_INSTITUTION},raw_affiliation_strings.search:RCEES`,
-  `raw_affiliation_strings.search:"Regional Centre for Energy and Environmental Sustainability"`,
-];
+async function openalex(path, params) {
+  const url = new URL(`https://api.openalex.org/${path}`);
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+  url.searchParams.set("mailto", MAILTO);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`OpenAlex ${res.status}: ${await res.text()}`);
+  return res.json();
+}
 
-async function fetchAll(filter) {
+async function fetchAllWorks(filter, label) {
   const works = [];
   let cursor = "*";
-  let page = 0;
-  while (cursor) {
-    const url = new URL("https://api.openalex.org/works");
-    url.searchParams.set("filter", filter);
-    url.searchParams.set("per-page", String(PER_PAGE));
-    url.searchParams.set("cursor", cursor);
-    url.searchParams.set("select", SELECT);
-    url.searchParams.set("mailto", MAILTO);
-
-    const res = await fetch(url);
-    if (!res.ok) {
-      throw new Error(`OpenAlex ${res.status}: ${await res.text()}`);
-    }
-    const data = await res.json();
+  let pages = 0;
+  while (cursor && pages < PAGE_CEILING) {
+    const data = await openalex("works", {
+      filter,
+      "per-page": String(PER_PAGE),
+      cursor,
+      select: SELECT,
+    });
     works.push(...data.results);
     cursor = data.meta.next_cursor;
-    page++;
-    if (page > 30) break; // safety ceiling
+    pages++;
   }
+  console.log(`  ${label}: ${works.length} works (${pages} pages)`);
   return works;
+}
+
+async function resolveFacultyAuthorIds(names) {
+  const ids = new Set();
+  for (const name of names) {
+    try {
+      const data = await openalex("authors", {
+        search: name,
+        "per-page": "10",
+      });
+      for (const a of data.results) {
+        const insts = [
+          ...(a.last_known_institutions || []),
+          ...(a.affiliations || []).flatMap((af) => [af.institution]),
+        ].filter(Boolean);
+        const linked = insts.some(
+          (i) =>
+            (i.lineage || []).some((l) => l.endsWith(UENR_INSTITUTION)) ||
+            (i.id || "").endsWith(UENR_INSTITUTION),
+        );
+        if (linked) {
+          ids.add(a.id);
+        }
+      }
+    } catch (e) {
+      console.warn(`  ! failed author lookup for "${name}": ${e.message}`);
+    }
+  }
+  return [...ids];
 }
 
 function normalise(w) {
   const authors = (w.authorships || []).map((a) => ({
     name: a.author?.display_name || "Unknown",
-    orcid: a.author?.orcid || null,
     isRcees: (a.raw_affiliation_strings || []).some((s) =>
-      /RCEES|Regional Centre for Energy and Environmental Sustainability/i.test(s),
+      /RCEES|Regional Centre for Energy and Environmental Sustainability/i.test(
+        s,
+      ),
+    ),
+    isUenr: (a.institutions || []).some(
+      (i) =>
+        (i.lineage || []).some((l) => l.endsWith(UENR_INSTITUTION)) ||
+        (i.id || "").endsWith(UENR_INSTITUTION),
     ),
   }));
+
+  const isRcees = authors.some((a) => a.isRcees);
+  const isUenr = authors.some((a) => a.isUenr);
 
   const venue = w.primary_location?.source?.display_name || null;
   const venueType = w.primary_location?.source?.type || null;
@@ -97,27 +162,58 @@ function normalise(w) {
     date: w.publication_date,
     type: w.type,
     citations: w.cited_by_count || 0,
-    authors,
+    authors: authors.slice(0, 15),
+    authorCount: authors.length,
     venue,
     venueType,
     isOpenAccess: isOa,
+    isRcees,
+    isUenr,
     url: oaUrl || landingUrl || w.doi || w.id,
     topics,
   };
 }
 
 async function main() {
-  console.log("Fetching RCEES publications from OpenAlex…");
-  const all = [];
-  for (const f of FILTERS) {
-    console.log(`  filter: ${f}`);
-    const works = await fetchAll(f);
-    console.log(`  -> ${works.length} works`);
-    all.push(...works);
+  console.log("Fetching UENR / RCEES publications from OpenAlex…");
+  const byId = new Map();
+
+  const filters = [
+    {
+      filter: `authorships.institutions.lineage:${UENR_INSTITUTION}`,
+      label: "UENR institution lineage",
+    },
+    {
+      filter: `raw_affiliation_strings.search:RCEES`,
+      label: "raw affiliation: RCEES",
+    },
+    {
+      filter: `raw_affiliation_strings.search:"Regional Centre for Energy and Environmental Sustainability"`,
+      label: "raw affiliation: full centre name",
+    },
+  ];
+
+  for (const { filter, label } of filters) {
+    const ws = await fetchAllWorks(filter, label);
+    for (const w of ws) byId.set(w.id, w);
   }
 
-  const byId = new Map();
-  for (const w of all) byId.set(w.id, w);
+  console.log("Resolving RCEES faculty author IDs…");
+  const authorIds = await resolveFacultyAuthorIds(FACULTY_NAMES);
+  console.log(`  resolved ${authorIds.length} author IDs`);
+
+  if (authorIds.length) {
+    const chunks = [];
+    for (let i = 0; i < authorIds.length; i += 25) {
+      chunks.push(authorIds.slice(i, i + 25));
+    }
+    for (const chunk of chunks) {
+      const filter = `author.id:${chunk.map((id) => id.split("/").pop()).join("|")}`;
+      const ws = await fetchAllWorks(filter, `faculty author IDs (${chunk.length})`);
+      for (const w of ws) byId.set(w.id, w);
+    }
+  }
+
   const deduped = [...byId.values()].map(normalise);
 
   deduped.sort((a, b) => {
@@ -134,7 +230,7 @@ async function main() {
 
   await mkdir(dirname(OUT_PATH), { recursive: true });
   await writeFile(OUT_PATH, JSON.stringify(payload, null, 2));
-  console.log(`Wrote ${deduped.length} publications -> ${OUT_PATH}`);
+  console.log(`\nWrote ${deduped.length} unique publications -> ${OUT_PATH}`);
 }
 
 main().catch((err) => {
