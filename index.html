@@ -289,6 +289,11 @@ section{padding:5rem 0}
   border-radius:7px;background:var(--white);color:var(--blue);cursor:pointer;
   transition:all .2s;display:block;margin-left:auto;margin-right:auto}
 .pub-show-more:hover{background:var(--blue);color:var(--white)}
+.pub-pagination{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:.75rem}
+.pub-pg-btn{font-family:var(--sans);font-size:.78rem;font-weight:600;padding:.4rem 1rem;border:1.5px solid var(--blue);border-radius:7px;background:var(--white);color:var(--blue);cursor:pointer;transition:all .2s}
+.pub-pg-btn:hover:not(:disabled){background:var(--blue);color:var(--white)}
+.pub-pg-btn:disabled{opacity:.4;cursor:not-allowed}
+.pub-pg-info{font-size:.78rem;color:var(--gray-500);font-family:var(--sans);white-space:nowrap}
 .pub-no-results{grid-column:1/-1;text-align:center;padding:3.5rem 1rem;
   color:var(--gray-500);font-size:.9rem}
 .pub-loading{grid-column:1/-1;display:flex;align-items:center;gap:.75rem;
@@ -316,6 +321,9 @@ section{padding:5rem 0}
   .pub-card{background:#0d2140;border-color:#1e3a5a}
   .pub-card:hover{border-color:#4a90d9;box-shadow:0 2px 10px rgba(0,0,0,.3)}
   .pub-show-more{background:#0a1628;border-color:#2a5a8a;color:#4a90d9}
+  .pub-pg-btn{background:#0a1628;border-color:#2a5a8a;color:#4a90d9}
+  .pub-pg-btn:hover:not(:disabled){background:#2a5a8a;color:#e8f0f8}
+  .pub-pg-info{color:#8aaccc}
   .pub-show-more:hover{background:#2a5a8a;color:#e8f0f8}
   .pub-card-title{color:#e8f0f8}
   .pub-card-authors{color:#8aaccc}
@@ -1355,7 +1363,7 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
       <div class="pj-card rv d2 vis" data-status="active" data-cat="Energy, Mobility &amp; Systems" data-duration="2023 – 2026" data-amount="" data-funder="DAAD" data-pi="Dr. Gifty Serwaa Mensah" data-objectives="Develop gender-sensitive energy access strategies|Engage disadvantaged communities using STEAM methods|Co-design appropriate energy solutions with end users|Build local capacity for inclusive energy planning"><div class="pj-img has-photo" style="background-image:url(\'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=600&amp;q=80\');background-size:cover;background-position:center"><span class="pj-badge">Active</span></div><div class="pj-body"><h3 data-edit-id="pc-h-2">GenDesign (STEAM): Energy Access Strategy for Disadvantaged Communities</h3><p data-edit-id="pc-p-2">Developing gender-sensitive, community-driven energy access strategies for underserved populations in Ghana using STEAM approaches.</p><div class="pj-partners" data-edit-id="pc-partner-2"><strong>Partners:</strong> UENR, DAAD</div><div class="pj-funded"><strong>Funded by:</strong> DAAD</div></div></div>
       <div class="pj-card rv d3 vis" data-status="active" data-cat="Energy, Mobility &amp; Systems" data-duration="2022 – 2025" data-amount="" data-funder="DAAD / BMZ" data-pi="Dr. Benjamin Batinge" data-objectives="Establish a centre for digital teaching and learning|Develop e-learning modules for energy and environment|Train faculty in digital pedagogy methods|Create open educational resources for the sector"><div class="pj-img has-photo" style="background-image:url(\'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&amp;q=80\');background-size:cover;background-position:center"><span class="pj-badge">Active</span></div><div class="pj-body"><h3 data-edit-id="pc-h-3">Centre of Competence in Digital Education</h3><p data-edit-id="pc-p-3">Building digital education capacity for energy and environmental training through innovative pedagogical tools and platforms.</p><div class="pj-partners" data-edit-id="pc-partner-3"><strong>Partners:</strong> UENR, Oldenburg University</div><div class="pj-funded"><strong>Funded by:</strong> DAAD / BMZ</div></div></div>
       <div class="pj-card rv d4 pj-extra" data-status="active" data-cat="Energy, Mobility &amp; Systems" data-duration="Ongoing" data-amount="" data-funder="Hochschule Bochum (HSBO)" data-pi="" data-objectives="Integrate green hydrogen production, storage, and fuel cell technologies into Ghana's decentralized energy systems|Assess local conditions and evaluate social acceptance|Determine scalability potential of green hydrogen within the national energy mix|Examine sector-specific use cases in healthcare, education, industry, and residential energy systems"><div class="pj-img" style="background:linear-gradient(135deg,var(--green-dark),var(--blue))"><span class="pj-badge">Active</span></div><div class="pj-body"><h3 data-edit-id="pc-h-4">Green Hydrogen Ghana (GH₂GH)</h3><p data-edit-id="pc-p-4">Exploring social perspectives and decentralized applications of green hydrogen in Ghana, including production, storage, and fuel cell technologies.</p><div class="pj-partners" data-edit-id="pc-partner-4"><strong>Partners:</strong> UENR, Hochschule Bochum (Germany)</div><div class="pj-funded"><strong>Funded by:</strong> Hochschule Bochum (HSBO)</div></div></div>
-    </div><button class="proj-more-btn">Show more projects</button><button class="proj-more-btn">Show more projects</button><button class="proj-more-btn">Show more projects</button>
+    </div>
   </div>
 
   <!-- Climate, Water & Infrastructure -->
@@ -1377,7 +1385,7 @@ body.edit-active .edit-fab{right:calc(380px + 2rem)}
       <div class="pj-card" data-status="active" data-cat="Education, Modelling &amp; Transition" data-duration="2022 – 2025" data-amount="" data-funder="Loughborough University" data-pi="Dr. Gifty Serwaa Mensah" data-objectives="Model clean energy demand using ML and surveys|Identify barriers to clean energy adoption in Ghana|Develop evidence-based deployment strategies|Inform national clean cooking and electrification targets"><div class="pj-img has-photo" style="background-image:url(\'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&amp;q=80\');background-size:cover;background-position:center"><span class="pj-badge">Active</span></div><div class="pj-body"><h3 data-edit-id="pc-h-12">SCOPE: Demand Modelling for Clean Energy</h3><p data-edit-id="pc-p-12">Using machine learning, surveys, and qualitative approaches to model clean energy demand and inform deployment strategies.</p><div class="pj-partners" data-edit-id="pc-partner-12"><strong>Partners:</strong> UENR, Loughborough University</div><div class="pj-funded"><strong>Funded by:</strong> Loughborough University</div></div></div>
       <div class="pj-card pj-extra" data-status="active" data-cat="Education, Modelling &amp; Transition" data-duration="2026 – 2030" data-amount="" data-funder="Aalborg University (Denmark)" data-pi="" data-objectives="Transform postgraduate education by embedding Problem-Based Learning (PBL)|Integrate design-driven innovation and sustainability-focused digital transformation into Master's programmes|Strengthen institutional capacity for research-led, student-centred education|Enhance employability and innovation skills among African graduates"><div class="pj-img" style="background:linear-gradient(135deg,var(--blue),var(--green))"><span class="pj-badge">Active</span></div><div class="pj-body"><h3 data-edit-id="pc-h-13">INCLUDE Project</h3><p data-edit-id="pc-p-13">Collaborative partnership to enhance engineering and IT education through problem-based learning and digital transformation across partner universities.</p><div class="pj-partners" data-edit-id="pc-partner-13"><strong>Partners:</strong> Aalborg University (Denmark), Sokoine University of Agriculture (Tanzania), Gulu University (Uganda)</div><div class="pj-funded"><strong>Funded by:</strong> Aalborg University (Denmark)</div></div></div>
       <div class="pj-card pj-extra" data-status="active" data-cat="Education, Modelling &amp; Transition" data-duration="2025 – 2029" data-amount="" data-funder="Consortium" data-pi="" data-objectives="Train 26 Master's students, 9 PhD candidates, 12 trainees, and 9 academic staff|Promote research, training, and academic mobility in renewable energy, waste management, sustainable urban mobility, and climate adaptation|Develop a new generation of African professionals equipped for the green transition"><div class="pj-img" style="background:linear-gradient(135deg,var(--green-dark),#3a6a8a)"><span class="pj-badge">Active</span></div><div class="pj-body"><h3 data-edit-id="pc-h-14">GreenTech Mobility Project</h3><p data-edit-id="pc-p-14">Consortium of six African universities and two international partners advancing sustainable technologies and academic capacity across Africa.</p><div class="pj-partners" data-edit-id="pc-partner-14"><strong>Partners:</strong> 6 African universities, 2 international partners</div><div class="pj-funded"><strong>Funded by:</strong> Consortium</div></div></div>
-    </div><button class="proj-more-btn">Show more projects</button><button class="proj-more-btn">Show more projects</button><button class="proj-more-btn">Show more projects</button>
+    </div>
   </div>
 
   <!-- Collaboration & Exchange -->
@@ -3195,28 +3203,40 @@ bttBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
       grid.appendChild(card);
     });
 
-    // Show-more: hide beyond 10 cards (5 rows × 2 cols)
-    const LIMIT=10;
+    // Pagination: 10 cards per page
+    const PAGE_SIZE=10;
+    let currentPage=1;
     const allCards=[...grid.querySelectorAll('.pub-card')];
-    if(allCards.length>LIMIT){
-      allCards.slice(LIMIT).forEach(c=>c.classList.add('pub-hidden'));
-      const btn=document.createElement('button');
-      btn.className='pub-show-more';
-      btn.textContent='Show more (+'+(allCards.length-LIMIT)+')';
-      btn.addEventListener('click',()=>{
-        const hidden=[...grid.querySelectorAll('.pub-card.pub-hidden')];
-        if(hidden.length){hidden.forEach(c=>c.classList.remove('pub-hidden'));btn.textContent='Show less';}
-        else{allCards.slice(LIMIT).forEach(c=>c.classList.add('pub-hidden'));btn.textContent='Show more (+'+(allCards.length-LIMIT)+')';grid.scrollIntoView({behavior:'smooth',block:'start'});}
-      });
-      grid.appendChild(btn);
+    const pager=document.createElement('div');
+    pager.className='pub-pagination';
+    grid.appendChild(pager);
+    function renderPage(page,filtered){
+      const cards=filtered||allCards;
+      const total=cards.length;
+      const totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+      currentPage=Math.min(Math.max(1,page),totalPages);
+      const start=(currentPage-1)*PAGE_SIZE;
+      allCards.forEach(c=>c.style.display='none');
+      cards.slice(start,start+PAGE_SIZE).forEach(c=>c.style.display='');
+      pager.innerHTML=
+        '<button class="pub-pg-btn" id="pubPrev"'+(currentPage<=1?' disabled':'')+'>&#8592; Prev</button>'+
+        '<span class="pub-pg-info">Page '+currentPage+' of '+totalPages+'</span>'+
+        '<button class="pub-pg-btn" id="pubNext"'+(currentPage>=totalPages?' disabled':'')+'>Next &#8594;</button>';
+      pager.style.display=totalPages<=1?'none':'';
+      pager.querySelector('#pubPrev').addEventListener('click',()=>{renderPage(currentPage-1,cards);grid.scrollIntoView({behavior:'smooth',block:'start'});});
+      pager.querySelector('#pubNext').addEventListener('click',()=>{renderPage(currentPage+1,cards);grid.scrollIntoView({behavior:'smooth',block:'start'});});
+      let msg=grid.querySelector('.pub-no-results');
+      if(!total){if(!msg){msg=document.createElement('p');msg.className='pub-no-results';msg.textContent='No publications match the selected filters.';grid.insertBefore(msg,pager);}}
+      else if(msg)msg.remove();
     }
+    renderPage(1);
 
     const note=document.createElement('p');
     note.className='pub-api-note';note.textContent='Source: Google Scholar';
     grid.appendChild(note);
 
     rebuildSidebar(years,[...themeSet].sort());
-    attachFilters();
+    attachFilters(renderPage);
   }
 
   function classifyTheme(title,pub){
@@ -3252,27 +3272,19 @@ bttBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
       '</div>';
   }
 
-  function attachFilters(){
+  function attachFilters(renderPage){
     function apply(){
-      const cards=[...grid.querySelectorAll('.pub-card')];
+      const allC=[...grid.querySelectorAll('.pub-card')];
       const year=(sidebar.querySelector('#pubYearSelect')||{}).value||'';
       const author=(sidebar.querySelector('#pubAuthorSelect')||{}).value||'';
       const themes=[...document.querySelectorAll('input[name="pub-theme"]:checked')].map(el=>el.value);
       const filtering=year||author||themes.length;
-      let vis=0;
-      cards.forEach(card=>{
-        const match=(!year||card.dataset.year===year)&&
-                    (!author||card.dataset.authors.split(',').includes(author))&&
-                    (!themes.length||themes.includes(card.dataset.theme));
-        if(filtering){card.style.display=match?'':'none';}
-        else{card.style.display='';}
-        if(match&&(filtering||!card.classList.contains('pub-hidden')))vis++;
-      });
-      const btn=grid.querySelector('.pub-show-more');
-      if(btn)btn.style.display=filtering?'none':'';
-      let msg=grid.querySelector('.pub-no-results');
-      if(!vis){if(!msg){msg=document.createElement('p');msg.className='pub-no-results';msg.textContent='No publications match the selected filters.';grid.insertBefore(msg,grid.querySelector('.pub-api-note'));}}
-      else if(msg)msg.remove();
+      const filtered=filtering?allC.filter(card=>
+        (!year||card.dataset.year===year)&&
+        (!author||card.dataset.authors.split(',').includes(author))&&
+        (!themes.length||themes.includes(card.dataset.theme))
+      ):allC;
+      renderPage(1,filtered);
     }
     sidebar.addEventListener('change',e=>{
       if(e.target.matches('select')||e.target.matches('input[type=checkbox]'))apply();
