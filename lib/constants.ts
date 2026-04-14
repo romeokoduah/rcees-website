@@ -461,16 +461,17 @@ export const faculty = [
 export const team = {
   management: [
     {
-      name: "Prof. Ing. Eric Ofosu Antwi",
-      role: "Centre Leader",
-      credentials: "Associate Professor, Civil Engineering",
-      bio: "More than two decades of engineering practice and academic leadership. Led the delivery of the Centre's ultramodern building and was recognised by the World Bank for leadership of an ACE Impact centre.",
+      name: "Prof. Ing. Samuel Gyamfi",
+      role: "Centre Director",
+      credentials: "Professor, School of Energy",
+      bio: "Leads RCEES as Centre Director. Research and teaching across sustainable energy systems, with decades of contribution to UENR's postgraduate programmes in energy and environmental sustainability.",
+      photo: "/images/samuel-gyamfi.png",
     },
     {
-      name: "Prof. Ing. Samuel Gyamfi",
-      role: "Deputy Centre Leader",
-      credentials: "Professor, School of Energy",
-      bio: "Research and teaching across sustainable energy systems, with decades of contribution to UENR's postgraduate programmes.",
+      name: "Prof. Ing. Eric Ofosu Antwi",
+      role: "Deputy Centre Director",
+      credentials: "Associate Professor, Civil Engineering",
+      bio: "More than two decades of engineering practice and academic leadership. Led the delivery of the Centre's ultramodern building and was recognised by the World Bank for leadership of an ACE Impact centre.",
     },
     {
       name: "Dr. Benjamin Batinge",

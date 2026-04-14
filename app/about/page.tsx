@@ -32,7 +32,7 @@ export default function AboutPage() {
       <section className="container-rcees py-24">
         <div className="grid gap-16 md:grid-cols-12">
           <div className="md:col-span-7">
-            <SectionHeading eyebrow="Welcome message" title="From the Centre Leader" />
+            <SectionHeading eyebrow="Welcome message" title="From the Centre Director" />
             <div className="mt-8 space-y-5 text-[1.05rem] leading-relaxed text-ink/80">
               <p>
                 Welcome to RCEES. Since 2019, we have worked to build an academic institution in Sunyani capable
@@ -50,7 +50,7 @@ export default function AboutPage() {
                 "Our job is to prepare graduates who can walk into a utility, a ministry, a research lab or
                 a consulting firm and deliver on the first day."
               </blockquote>
-              <p className="text-sm text-muted">— Prof. Ing. Eric Ofosu Antwi, Centre Leader</p>
+              <p className="text-sm text-muted">— Prof. Ing. Samuel Gyamfi, Centre Director</p>
             </div>
             <div className="mt-10">
               <Link href="/about/team" className="btn-primary">Meet the team</Link>

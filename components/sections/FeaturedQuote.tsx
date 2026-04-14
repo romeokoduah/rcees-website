@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Quote } from "lucide-react";
-import { images } from "@/lib/constants";
+
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export function FeaturedQuote() {
   return (
@@ -12,8 +13,8 @@ export function FeaturedQuote() {
               <div className="absolute -left-5 -top-5 h-full w-full bg-sun" />
               <div className="absolute inset-0 overflow-hidden bg-maroon-900">
                 <Image
-                  src={images.directorWelcome}
-                  alt="Prof. Eric Ofosu Antwi, Centre Leader"
+                  src={`${basePath}/images/samuel-gyamfi.png`}
+                  alt="Prof. Ing. Samuel Gyamfi, Centre Director"
                   fill
                   sizes="(min-width: 1024px) 40vw, 100vw"
                   className="object-cover"
@@ -21,8 +22,8 @@ export function FeaturedQuote() {
                 <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-maroon-900/70 to-transparent" />
               </div>
               <div className="absolute -bottom-6 right-4 bg-maroon px-8 py-5 text-paper shadow-2xl">
-                <p className="eyebrow-sun">Centre Leader</p>
-                <p className="mt-1 font-serif text-xl italic">Prof. Eric Ofosu Antwi</p>
+                <p className="eyebrow-sun">Centre Director</p>
+                <p className="mt-1 font-serif text-xl italic">Prof. Ing. Samuel Gyamfi</p>
               </div>
             </div>
           </div>
@@ -37,8 +38,8 @@ export function FeaturedQuote() {
             <div className="mt-12 flex items-center gap-4">
               <span className="h-[2px] w-20 bg-maroon" />
               <div>
-                <p className="font-serif text-lg font-semibold text-ink">Prof. Ing. Eric Ofosu Antwi</p>
-                <p className="text-xs uppercase tracking-wider text-muted">Centre Leader · RCEES</p>
+                <p className="font-serif text-lg font-semibold text-ink">Prof. Ing. Samuel Gyamfi</p>
+                <p className="text-xs uppercase tracking-wider text-muted">Centre Director · RCEES</p>
               </div>
             </div>
           </div>

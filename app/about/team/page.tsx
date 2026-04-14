@@ -3,6 +3,8 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { team, images } from "@/lib/constants";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 export const metadata: Metadata = {
   title: "The Team",
   description: "Centre management, faculty, advisory boards and fellows at RCEES.",
@@ -22,15 +24,35 @@ export default function TeamPage() {
       <section className="container-rcees py-24">
         <SectionHeading eyebrow="Centre management" title="The leadership team." />
         <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {team.management.map((m) => (
-            <article key={m.name} className="flex h-full flex-col border border-rule bg-paper p-7">
-              <div className="h-28 w-28 rounded-full bg-mist border border-rule" aria-hidden="true" />
-              <p className="mt-6 eyebrow">{m.role}</p>
-              <h3 className="mt-2 font-serif text-xl leading-snug text-ink">{m.name}</h3>
-              <p className="mt-1 text-sm text-muted">{m.credentials}</p>
-              <p className="mt-4 text-sm leading-relaxed text-ink/75">{m.bio}</p>
-            </article>
-          ))}
+          {team.management.map((m) => {
+            const photo = "photo" in m && m.photo ? `${basePath}${m.photo}` : null;
+            return (
+              <article
+                key={m.name}
+                className="flex h-full flex-col border border-rule bg-paper p-7"
+              >
+                {photo ? (
+                  <img
+                    src={photo}
+                    alt={m.name}
+                    className="h-28 w-28 rounded-full border border-rule object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div
+                    className="h-28 w-28 rounded-full border border-rule bg-mist"
+                    aria-hidden="true"
+                  />
+                )}
+                <p className="mt-6 eyebrow">{m.role}</p>
+                <h3 className="mt-2 font-serif text-xl leading-snug text-ink">
+                  {m.name}
+                </h3>
+                <p className="mt-1 text-sm text-muted">{m.credentials}</p>
+                <p className="mt-4 text-sm leading-relaxed text-ink/75">{m.bio}</p>
+              </article>
+            );
+          })}
         </div>
       </section>
 
