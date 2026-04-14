@@ -3134,6 +3134,7 @@ bttBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
   const sidebar=document.querySelector('.pub-sidebar');
   if(!grid||!sidebar)return;
 
+  const staticHTML=grid.innerHTML;
   grid.innerHTML='<div class="pub-loading"><span class="pub-spinner"></span>Loading publications…</div>';
 
   // Fetch pre-built publications.json (updated daily by GitHub Action)
@@ -3271,7 +3272,7 @@ bttBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
   }
 
   function showStatic(){
-    grid.querySelector('.pub-loading')&&grid.querySelector('.pub-loading').remove();
+    grid.innerHTML=staticHTML;
     function apply(){
       const cards=[...grid.querySelectorAll('.pub-card')];
       const year=(sidebar.querySelector('#pubYearSelect')||{}).value||'';
