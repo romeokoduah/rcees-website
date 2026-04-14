@@ -1,8 +1,38 @@
 import type { Metadata } from "next";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { NewsCard } from "@/components/ui/NewsCard";
-import { newsItems, images } from "@/lib/constants";
+import { images } from "@/lib/constants";
+
+type NewsItem = {
+  id: number;
+  date: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  link: string;
+  image: string | null;
+};
+
+async function getNews(): Promise<NewsItem[]> {
+  try {
+    const p = path.join(process.cwd(), "public", "data", "news.json");
+    const raw = await readFile(p, "utf-8");
+    const data = JSON.parse(raw);
+    return data.items || [];
+  } catch {
+    return [];
+  }
+}
+
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+function withBase(src: string | null): string | null {
+  if (!src) return null;
+  if (/^https?:\/\//.test(src)) return src;
+  return `${basePath}${src}`;
+}
 
 export const metadata: Metadata = {
   title: "News & Events",
@@ -21,7 +51,8 @@ const stories = [
   { name: "Marianne Rakotondrazaka", programme: "PhD Environmental Engineering and Management", body: "Postdoctoral researcher at an EU partner university, continuing her work on water quality in reservoir systems." },
 ];
 
-export default function NewsPage() {
+export default async function NewsPage() {
+  const news = await getNews();
   return (
     <>
       <PageHeader
@@ -33,10 +64,28 @@ export default function NewsPage() {
       />
 
       <section className="container-rcees py-24">
-        <SectionHeading eyebrow="News" title="Latest from the Centre." />
-        <div className="mt-14 grid gap-10 md:grid-cols-3">
-          {newsItems.map((n) => <NewsCard key={n.title} {...n} />)}
+        <div className="flex items-end justify-between gap-8">
+          <SectionHeading eyebrow="News" title="Latest from the Centre." />
+          <p className="hidden font-mono text-xs text-muted md:block">
+            {news.length} articles archived
+          </p>
         </div>
+        {news.length === 0 ? (
+          <p className="mt-10 text-sm text-muted">No news items available.</p>
+        ) : (
+          <div className="mt-14 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+            {news.map((n) => (
+              <NewsCard
+                key={n.id}
+                date={n.date}
+                title={n.title}
+                excerpt={n.excerpt}
+                image={withBase(n.image)}
+                href={n.link}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       <section id="events" className="border-y border-rule bg-mist">
