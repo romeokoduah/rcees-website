@@ -72,6 +72,7 @@ export const nav: NavItem[] = [
     children: [
       { label: "Overview", href: "/about", description: "Vision, mission and values" },
       { label: "The Team", href: "/about/team", description: "Leadership, faculty and boards" },
+      { label: "Faculty", href: "/about/faculty", description: "Teaching and research staff" },
       { label: "History", href: "/about/history", description: "Milestones since 2019" },
       { label: "Facilities", href: "/about/facilities", description: "Labs and infrastructure" },
     ],
@@ -321,6 +322,141 @@ export const partners = [
   { name: "Koforidua, Sunyani, Kumasi & Tamale Technical Universities", role: "Professional training partners" },
   { name: "University of Applied Forest Sciences, Rottenburg", role: "Biomass research partner" },
 ];
+
+export const faculty = [
+  {
+    name: "Rev. Ing. Prof. Eric Antwi Ofosu",
+    role: "Centre Leader",
+    credentials: "Associate Professor, Civil Engineering",
+    photo: "/images/faculty/eric-antwi-ofosu.jpg",
+  },
+  {
+    name: "Prof. Samuel Gyamfi",
+    role: "Deputy Centre Leader",
+    credentials: "Professor, School of Energy",
+    photo: "/images/samuel-gyamfi.png",
+  },
+  {
+    name: "Prof. Amos T. Kabobah",
+    role: "Faculty",
+    credentials: "Professor, Energy and Environmental Engineering",
+    photo: "/images/faculty/amos-kabobah.jpg",
+  },
+  {
+    name: "Prof. Francis Attiogbe",
+    role: "Faculty",
+    credentials: "Professor, Environmental Engineering",
+    photo: "/images/faculty/francis-attiogbe.jpg",
+  },
+  {
+    name: "Prof. Nana Sarfo Derkyi",
+    role: "Faculty",
+    credentials: "Associate Professor",
+    photo: "/images/faculty/nana-sarfo-derkyi.jpg",
+  },
+  {
+    name: "Prof. Daniel Adu",
+    role: "Faculty",
+    credentials: "Professor",
+    photo: "/images/faculty/daniel-adu.png",
+  },
+  {
+    name: "Samuel Fosu Gyasi, PhD",
+    role: "Faculty",
+    credentials: "Senior Lecturer",
+    photo: "/images/faculty/samuel-fosu-gyasi.jpg",
+  },
+  {
+    name: "Ebenezer N. Kumi, PhD",
+    role: "Faculty",
+    credentials: "Senior Lecturer",
+    photo: "/images/faculty/ebenezer-kumi.jpg",
+  },
+  {
+    name: "Ismaila Emahi, PhD",
+    role: "Faculty",
+    credentials: "Senior Lecturer",
+    photo: "/images/faculty/ismaila-emahi.jpg",
+  },
+  {
+    name: "Dr. Emmanuel Amankwah",
+    role: "Faculty",
+    credentials: "Lecturer",
+    photo: "/images/faculty/emmanuel-amankwah.jpg",
+  },
+  {
+    name: "Dr. Martin Domfeh",
+    role: "Faculty",
+    credentials: "Lecturer",
+    photo: "/images/faculty/martin-domfeh.jpg",
+  },
+  {
+    name: "Ing. Dr. Mary Antwi",
+    role: "Faculty",
+    credentials: "Lecturer",
+    photo: "/images/faculty/mary-antwi.webp",
+  },
+  {
+    name: "Mark Amo-Boateng, PhD",
+    role: "Faculty",
+    credentials: "Senior Lecturer",
+    photo: "/images/faculty/mark-amo-boateng.jpg",
+  },
+  {
+    name: "Eric E. Donyina, PhD",
+    role: "Faculty",
+    credentials: "Lecturer",
+    photo: "/images/faculty/eric-donyina.jpg",
+  },
+  {
+    name: "Kamila Kabo-Bah, PhD",
+    role: "Faculty",
+    credentials: "Lecturer",
+    photo: "/images/faculty/kamila-kabo-bah.jpg",
+  },
+  {
+    name: "Diawuo F. Amankwah, PhD",
+    role: "Faculty",
+    credentials: "Lecturer",
+    photo: "/images/faculty/diawuo-amankwah.jpg",
+  },
+  {
+    name: "Prince Antwi-Agyei, PhD",
+    role: "Faculty",
+    credentials: "Lecturer",
+    photo: "/images/prince-antwi-agyei.png",
+  },
+  {
+    name: "David Anaafo, PhD",
+    role: "Faculty",
+    credentials: "Lecturer",
+    photo: null,
+  },
+  {
+    name: "Francis A. Kuranchie, PhD",
+    role: "Faculty",
+    credentials: "Lecturer",
+    photo: null,
+  },
+  {
+    name: "E. Kwesi Nyantakyi, PhD",
+    role: "Faculty",
+    credentials: "Lecturer",
+    photo: null,
+  },
+  {
+    name: "Edward A. Awafo, PhD",
+    role: "Faculty",
+    credentials: "Lecturer",
+    photo: null,
+  },
+  {
+    name: "Kenneth O. Bentum, PhD",
+    role: "Faculty",
+    credentials: "Lecturer",
+    photo: null,
+  },
+] as const;
 
 export const team = {
   management: [
