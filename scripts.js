@@ -308,15 +308,7 @@ if(document.getElementById('heroSlider'))(function(){
   resetAuto();
 })();
 
-// Project tabs
-document.querySelectorAll('.proj-tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.proj-tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.proj-panel').forEach(p=>p.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('ptab-'+tab.dataset.ptab).classList.add('active');
-  });
-});
+// Project tabs removed — panels display as rows
 
 // Project modal
 (function(){
@@ -425,27 +417,35 @@ document.querySelectorAll('.proj-tab').forEach(tab=>{
   };
 })();
 
-// Project "Show more" functionality
+// Project panel pagination (8 per page)
 (function(){
+  const PAGE_SIZE=8;
   document.querySelectorAll('.proj-panel').forEach(panel=>{
     const grid=panel.querySelector('.proj-grid');
     if(!grid) return;
-
     const cards=Array.from(grid.querySelectorAll('.pj-card'));
-    if(cards.length<=4) return;
+    if(cards.length<=PAGE_SIZE) return; // no pagination needed
 
-    cards.slice(4).forEach(card=>card.classList.add('pj-extra'));
+    let currentPage=1;
+    const totalPages=Math.ceil(cards.length/PAGE_SIZE);
 
-    const btn=document.createElement('button');
-    btn.className='proj-more-btn';
-    btn.textContent='Show more projects';
-    btn.addEventListener('click',e=>{
-      e.preventDefault();
-      panel.classList.toggle('show-all');
-      btn.textContent=panel.classList.contains('show-all')?'Show less':'Show more projects';
-    });
+    // Create pager
+    const pager=document.createElement('div');
+    pager.className='proj-pager pub-pagination';
+    grid.parentNode.insertBefore(pager,grid.nextSibling);
 
-    grid.parentNode.insertBefore(btn,grid.nextSibling);
+    function renderPage(page){
+      currentPage=Math.min(Math.max(1,page),totalPages);
+      const start=(currentPage-1)*PAGE_SIZE;
+      cards.forEach((c,i)=>{ c.style.display=(i>=start&&i<start+PAGE_SIZE)?'':'none'; });
+      pager.innerHTML=
+        '<button class="pub-pg-btn" id="pjPrev-'+panel.id+'"'+(currentPage<=1?' disabled':'')+'>&#8592; Prev</button>'+
+        '<span class="pub-pg-info">Page '+currentPage+' of '+totalPages+'</span>'+
+        '<button class="pub-pg-btn" id="pjNext-'+panel.id+'"'+(currentPage>=totalPages?' disabled':'')+'>Next &#8594;</button>';
+      pager.querySelector('#pjPrev-'+panel.id).addEventListener('click',()=>renderPage(currentPage-1));
+      pager.querySelector('#pjNext-'+panel.id).addEventListener('click',()=>renderPage(currentPage+1));
+    }
+    renderPage(1);
   });
 })();
 
@@ -716,7 +716,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
 
 // Gallery pagination
 (function(){
-  const PAGE_SIZE=4;
+  const PAGE_SIZE=8;
   let currentPage=1;
   let currentFilter='all';
   const pager=document.getElementById('galPager');
