@@ -1,3 +1,16 @@
+// Active nav link
+(function(){
+  const page=location.pathname.split('/').pop()||'index.html';
+  document.querySelectorAll('.nav-links a:not(.nav-cta)').forEach(a=>{
+    const href=a.getAttribute('href')||'';
+    const linkPage=href.split('/').pop();
+    const isHome=(linkPage==='index.html'||linkPage==='')&&(page==='index.html'||page==='');
+    if(isHome||(linkPage&&linkPage===page)){
+      a.classList.add('nav-active');
+    }
+  });
+})();
+
 // Sticky header shadow
 const hdr=document.getElementById('hdr');
 const bttBtn=document.getElementById('btt');
