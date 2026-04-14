@@ -40,6 +40,10 @@ jobs:
         run: bun run scripts/fetch-news.mjs
         continue-on-error: true
 
+      - name: Fetch ACE Impact documents from rcees.uenr.edu.gh
+        run: bun run scripts/fetch-ace-impact.mjs
+        continue-on-error: true
+
       - run: bun run build
         env:
           NODE_ENV: production

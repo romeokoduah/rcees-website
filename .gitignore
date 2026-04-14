@@ -7,3 +7,14 @@ out/
 .vercel
 next-env.d.ts
 .claude/
+
+# Large binary assets fetched at build time, not committed to git.
+# The deploy workflow runs the scrapers before each build so these land
+# fresh in the deployed artifact.
+public/files/ace-impact/
+
+# scratch files used for one-off scraping
+ace_main.html
+dli53.html
+p1.json
+pages_meta.json
