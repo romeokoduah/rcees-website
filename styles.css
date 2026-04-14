@@ -89,6 +89,8 @@ header.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.06)}
 .nav-links a::after{content:'';position:absolute;bottom:.25rem;left:.85rem;right:.85rem;height:2px;background:var(--blue);border-radius:1px;transform:scaleX(0);transition:transform .25s var(--ease-out)}
 .nav-links a:hover{color:var(--blue);background:var(--blue-pale)}
 .nav-links a:hover::after{transform:scaleX(1)}
+.nav-links a.nav-active{color:var(--blue);background:var(--blue-pale);font-weight:600}
+.nav-links a.nav-active::after{transform:scaleX(1)}
 .nav-cta{background:var(--green)!important;color:var(--white)!important;font-weight:600!important;border-radius:6px!important;padding:.5rem 1.2rem!important}
 .nav-cta::after{display:none!important}
 .nav-cta:hover{background:var(--green-dark)!important}
