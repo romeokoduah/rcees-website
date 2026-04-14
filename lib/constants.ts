@@ -458,38 +458,198 @@ export const faculty = [
   },
 ] as const;
 
-export const team = {
+type Person = {
+  name: string;
+  role: string;
+  credentials?: string;
+  bio?: string;
+  photo?: string | null;
+};
+
+export const team: {
+  management: Person[];
+  administrators: Person[];
+  industrialBoard: Person[];
+  internationalBoard: Person[];
+} = {
   management: [
     {
-      name: "Prof. Ing. Samuel Gyamfi",
+      name: "Prof. Samuel Gyamfi",
       role: "Centre Director",
-      credentials: "Professor, School of Energy",
-      bio: "Leads RCEES as Centre Director. Research and teaching across sustainable energy systems, with decades of contribution to UENR's postgraduate programmes in energy and environmental sustainability.",
-      photo: "/images/samuel-gyamfi.png",
+      photo: "/images/management/samuel-gyamfi-v2.webp",
     },
     {
-      name: "Prof. Ing. Eric Ofosu Antwi",
-      role: "Deputy Centre Director",
-      credentials: "Associate Professor, Civil Engineering",
-      bio: "More than two decades of engineering practice and academic leadership. Led the delivery of the Centre's ultramodern building and was recognised by the World Bank for leadership of an ACE Impact centre.",
+      name: "Dr. Prince Antwi-Agyei",
+      role: "Deputy Director",
+      photo: "/images/management/prince-antwi-agyei-v2.webp",
     },
     {
-      name: "Dr. Benjamin Batinge",
-      role: "Deputy Centre Leader",
-      credentials: "PhD, Stellenbosch University; MPhil, University of Bergen",
-      bio: "Consultant to UNEP, the Green Climate Fund and the IFC on energy access, climate finance and sustainable development policy.",
+      name: "Mrs. Bernice Kyei Mensah",
+      role: "Centre Registrar",
+      photo: "/images/management/bernice-kyei-mensah-v2.webp",
     },
     {
       name: "Dr. Felix Amankwah Diawuo",
-      role: "Research Leader",
-      credentials: "Formerly Lawrence Berkeley National Laboratory",
-      bio: "Leads RCEES's research agenda on energy modelling, efficiency and the intersection of energy systems with environmental policy.",
+      role: "Research Coordinator",
+      photo: null,
     },
     {
-      name: "Eric",
-      role: "Centre Administrator",
-      credentials: "Junior Assistant Registrar",
-      bio: "Coordinates admissions, student affairs, finance and the day-to-day operations of the Centre.",
+      name: "Ing. Prof. Emmanuel K. Nyantakyi",
+      role: "Coordinator for Partnerships, Collaborations & Internships",
+      photo: null,
+    },
+    {
+      name: "Dr. Nana O. B. Ackerson",
+      role: "Academics Coordinator",
+      photo: null,
+    },
+    {
+      name: "Ing. Emmanuel Y. Asuamah",
+      role: "Short Courses & Capacity Building Coordinator",
+      photo: "/images/management/emmanuel-asuamah.webp",
+    },
+    {
+      name: "Mr. Samuel Akowuah Okyereh",
+      role: "Projects Manager",
+      photo: "/images/management/samuel-akowuah-okyereh.jpg",
+    },
+    {
+      name: "Mr. Mamud Musah",
+      role: "Business Development Coordinator",
+      photo: null,
+    },
+    {
+      name: "Dr. Benjamin Batinge",
+      role: "Grants & Consultancy Coordinator",
+      photo: "/images/management/benjamin-batinge.webp",
+    },
+    {
+      name: "Dr. Gifty Serwaa Mensah",
+      role: "Quality Assurance Coordinator",
+      photo: "/images/management/gifty-serwaa-mensah.webp",
+    },
+  ],
+  administrators: [
+    {
+      name: "Mrs. Bernice Kyei Mensah",
+      role: "Centre Registrar",
+      photo: "/images/management/bernice-kyei-mensah-v2.webp",
+    },
+    {
+      name: "Mrs. Stephanie Aidoo",
+      role: "Principal Administrative Assistant",
+      photo: "/images/management/stephanie-aidoo-v2.webp",
+    },
+    {
+      name: "Ruth Agyei Addo",
+      role: "Administrative Assistant",
+      photo: null,
+    },
+    {
+      name: "Vera Yeboah",
+      role: "Administrative Assistant (Facility Manager)",
+      photo: null,
+    },
+    {
+      name: "Stephen Adjei",
+      role: "Media & Communications Coordinator",
+      photo: null,
+    },
+    {
+      name: "Mr. Stephen Yaw Ntiamoah",
+      role: "Finance Specialist",
+      photo: null,
+    },
+  ],
+  industrialBoard: [
+    {
+      name: "Seth Agbeve Mahu",
+      role: "Deputy Director, Renewable Energy",
+      credentials: "Ministry of Energy, Ghana",
+      photo: "/images/boards/seth-mahu.jpg",
+    },
+    {
+      name: "Ebenezer Appah-Sampong",
+      role: "Deputy Director",
+      credentials: "Environmental Protection Agency, Ghana",
+      photo: "/images/boards/ebenezer-appah-sampong.jpg",
+    },
+    {
+      name: "Kwabena Agyei Agyapong",
+      role: "Ag. Executive Director",
+      credentials: "Ghana Institute of Engineering",
+      photo: "/images/boards/kwabena-agyapong.jpg",
+    },
+    {
+      name: "Anthony Boye Osafo-Kissi",
+      role: "Director of Projects and Engineering",
+      credentials: "Bui Power Authority, Ghana",
+      photo: null,
+    },
+    {
+      name: "Ben Yaw Ampomah",
+      role: "Executive Secretary",
+      credentials: "Water Resource Commission, Ghana",
+      photo: "/images/boards/ben-ampomah.jpg",
+    },
+    {
+      name: "Maxmillian Kwarteng",
+      role: "Ag. Managing Director",
+      credentials: "Strategic Power Solutions, Ghana",
+      photo: "/images/boards/maxmillian-kwarteng.jpg",
+    },
+    {
+      name: "Benjamin Ntsin",
+      role: "Head of Competence Centre, Energy and Environment",
+      credentials: "Delegation of German Industry and Commerce in Ghana",
+      photo: "/images/boards/benjamin-ntsin.jpg",
+    },
+  ],
+  internationalBoard: [
+    {
+      name: "Prof. Kodjo Agbossou",
+      role: "International Scientific Advisor",
+      credentials: "Université du Québec à Trois-Rivières, Canada",
+      photo: "/images/boards/kodjo-agbossou.jpg",
+    },
+    {
+      name: "Prof. Kondo H. Adjallah",
+      role: "International Scientific Advisor",
+      credentials:
+        "Ecole Nationale d'Ingénieurs de Metz, Lorraine INP / University of Lorraine, France",
+      photo: null,
+    },
+    {
+      name: "Prof. Chris Gordon",
+      role: "International Scientific Advisor",
+      credentials:
+        "Institute of Environment and Sanitation Studies, University of Ghana",
+      photo: null,
+    },
+    {
+      name: "Dr. Ijaz Rauf",
+      role: "International Scientific Advisor",
+      credentials: "York University, Department of Physics and Astronomy, Canada",
+      photo: "/images/boards/ijaz-rauf.jpg",
+    },
+    {
+      name: "Prof. Bob Andoh",
+      role: "International Scientific Advisor",
+      credentials: "Hydro International, United Kingdom",
+      photo: "/images/boards/bob-andoh.jpg",
+    },
+    {
+      name: "Prof. Susan Krumdieck",
+      role: "International Scientific Advisor",
+      credentials: "University of Canterbury, New Zealand",
+      photo: "/images/boards/susan-krumdieck.jpg",
+    },
+    {
+      name: "Prof. Mrs. Esi Awuah",
+      role: "International Scientific Advisor",
+      credentials:
+        "Kwame Nkrumah University of Science and Technology (KNUST), Ghana",
+      photo: null,
     },
   ],
 };
