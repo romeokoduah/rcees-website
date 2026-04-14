@@ -424,6 +424,10 @@ section{padding:5rem 0}
 /* ======== PROGRAMS (TABBED) ======== */
 #programs{background:linear-gradient(180deg,var(--blue-pale) 0%,#eaf0f7 100%)}
 .prog-tabs{display:none}
+.proj-tabs{display:none}
+.proj-panel{display:block!important;margin-bottom:3.5rem}
+.proj-panel:last-of-type{margin-bottom:0}
+.proj-pager{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.5rem}
 
 .prog-panel{display:block!important;margin-bottom:3rem}
 .prog-panel:last-of-type{margin-bottom:0}
@@ -432,7 +436,7 @@ section{padding:5rem 0}
 .prog-group-title::after{content:'';flex:1;height:1px;background:var(--gray-100)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-.prog-list{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem}
+.prog-list{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:1rem}
 .prog-item{flex:0 0 calc(25% - .75rem);max-width:calc(25% - .75rem);min-width:180px}
 /* Option A – Vertical Tile Cards */
 .prog-item{display:flex;flex-direction:column;padding:0;background:var(--white);border:1px solid var(--gray-100);border-radius:14px;overflow:hidden;transition:transform .25s var(--ease),box-shadow .25s var(--ease);cursor:pointer}
