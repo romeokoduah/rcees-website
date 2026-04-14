@@ -57,13 +57,10 @@ export const images = {
   contact: `${R}/2024/09/about-thumb-1-2.jpg`,
   logo: "/rcees-logo.png",
 
-  // Landing-page programme cards — Unsplash, African / Black subjects
-  phdCard:
-    "https://images.unsplash.com/photo-1594406074907-1387edf97a05?w=1600&auto=format&fit=crop&q=80",
-  mscCard:
-    "https://images.unsplash.com/photo-1620829813573-7c9e1877706f?w=1600&auto=format&fit=crop&q=80",
-  shortCoursesCard:
-    "https://images.unsplash.com/photo-1543181139-a1916d8dd9aa?w=1600&auto=format&fit=crop&q=80",
+  // Landing-page programme cards — local imagery
+  phdCard: "/images/phd-card.jpg",
+  mscCard: "/images/msc-card.jpg",
+  shortCoursesCard: "/images/short-courses-card.jpg",
 };
 
 export type NavItem = {
