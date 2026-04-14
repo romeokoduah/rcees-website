@@ -81,7 +81,7 @@ export default async function NewsPage() {
                 title={n.title}
                 excerpt={n.excerpt}
                 image={withBase(n.image)}
-                href={n.link}
+                href={`/news/${n.slug}`}
               />
             ))}
           </div>

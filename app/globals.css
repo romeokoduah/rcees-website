@@ -96,6 +96,42 @@
   .stamp {
     @apply inline-flex items-center gap-2 border border-current px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em];
   }
+
+  .news-article {
+    @apply text-[1.05rem] leading-relaxed text-ink/85;
+  }
+  .news-article p {
+    @apply my-5;
+  }
+  .news-article h2 {
+    @apply mt-12 mb-4 font-serif text-2xl text-ink;
+  }
+  .news-article h3 {
+    @apply mt-10 mb-3 font-serif text-xl text-ink;
+  }
+  .news-article ul,
+  .news-article ol {
+    @apply my-5 pl-6;
+  }
+  .news-article ul { @apply list-disc; }
+  .news-article ol { @apply list-decimal; }
+  .news-article li { @apply my-1; }
+  .news-article a {
+    @apply text-maroon underline decoration-maroon/40 underline-offset-4 hover:text-maroon-600;
+  }
+  .news-article blockquote {
+    @apply my-6 border-l-4 border-rule pl-6 italic text-ink/70;
+  }
+  .news-article figure {
+    @apply my-8;
+  }
+  .news-article img {
+    @apply h-auto w-full border border-rule;
+  }
+  .news-article figcaption {
+    @apply mt-2 text-center text-xs italic text-muted;
+  }
+  .news-article strong { @apply font-semibold; }
 }
 
 @keyframes marquee {
